@@ -108,27 +108,19 @@ def init_discord_bot():
         # Commands that require power ('!')
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
             global bot_start_msg
-            greetings = ["Hello", "Hewwo", "Henlo", "G'day", "Howdy", "Bonjour", "Hola", "Guten Tag", "Nǐ hǎo", "你好"]
-            good_things = ["great", "lovely", "wonderful", "awesome", "wonderful", "marvellous", "magnificent", "superb", "glorious", "lovely", "delightful", "fantastic", "amazing", "excellent", "incredible", "brilliant", "fabulous"]
             vowels = ['a', 'e', 'i', 'o', 'u']
-            start_emote = [
-                '🦊', '🐺', '😄', '😁', '🙂', '😉',
-                '🦊', '🐺', '😄', '😁', '🙂', '😉',
-                '🦊', '🐺', '😄', '😁', '🙂', '😉',
-                '🐲', '🐉', '🦔', '🕊', '🐇', '🐿', '🦃', '🐓', '🐈', '🐩', '🐕', '🐖', '🐏', '🐑', '🐐', '🦌', '🐎', '🐄', '🐂', '🐃', '🦒', '🦍', '🐘', '🦏', '🐪', '🐫', '🦓',
-            ]
             quote = random.choice(presets.QUOTES)
             SPACER = "~~-" + ' '*160 + "-~~"
             SMOL_SPACER = "~~-" + ' '*50 + "-~~"
 
             clean_start = 0
-            await message.author.send(SPACER + '\n**' + random.choice(greetings) + ' ' + presets.OWNER_NAME + '!** :)' + "\nJust finished starting up " + random.choice(start_emote) + "\nHope you're doing well")
+            await message.author.send(SPACER + '\n**' + random.choice(presets.GREETINGS) + ' ' + presets.OWNER_NAME + '!** :)' + "\nJust finished starting up " + random.choice(presets.START_EMOTES) + "\nHope you're doing well")
             # await message.author.send(":fox:")
             await message.author.send(SMOL_SPACER + '\n' + bot_start_msg)
             await message.author.send(SPACER + "\n**__Error log:__** `Empty :)`" + '\n' + 
                 "**__Unfinished request queue:__** *(`0` pending)* `Nothing here! :)`")
             await message.author.send(SPACER + "\n> ***" + quote[1] + "***\n            *- " + quote[0] + "*")
-            positive_descriptor = random.choice(good_things)
+            positive_descriptor = random.choice(presets.GOOD_THINGS)
             if positive_descriptor[0].lower() in vowels:
                 indefinite_article = "an "
             else:
@@ -136,7 +128,7 @@ def init_discord_bot():
             await message.author.send(SPACER + "\nHave " + indefinite_article + positive_descriptor + " day!")
 
             if str(message.channel) != "Direct Message with " + presets.OWNER_TAG:
-                msg_alert = await message.channel.send("<@!"+presets.OWNER_ID+"> Psst. Check your DMs " + random.choice(start_emote))
+                msg_alert = await message.channel.send("<@!"+presets.OWNER_ID+"> Psst. Check your DMs " + random.choice(presets.START_EMOTES))
                 await asyncio.sleep(5)
                 await msg_alert.delete()
             return
