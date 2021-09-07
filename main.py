@@ -162,7 +162,7 @@ def init_discord_bot():
             await message.author.send(SPACER + "\nHave " + indefinite_article + positive_descriptor + " day!")
 
             if str(message.channel) != "Direct Message with " + presets.OWNER_TAG:
-                msg_alert = await message.channel.send("<@!presets.OWNER_ID> Psst. Check your DMs " + random.choice(start_emote))
+                msg_alert = await message.channel.send("<@!"+presets.OWNER_ID+"> Psst. Check your DMs " + random.choice(start_emote))
                 await asyncio.sleep(5)
                 await msg_alert.delete()
             return
