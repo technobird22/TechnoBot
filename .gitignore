@@ -1,0 +1,17 @@
+# Files
+.env
+temp
+notes.md
+bot_logs.log
+presets.py
+temp.txt
+errors.log
+queue.txt
+test.py
+emote_react_server/emojis.json
+
+# Directories
+temp/
+emote_react_server/data/
+__pycache__/
+.vscode/
