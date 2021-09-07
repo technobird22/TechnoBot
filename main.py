@@ -17,32 +17,6 @@ import presets
 import interfacer
 import processor
 
-async def react_image(message, attachment):
-    global client
-
-    print("Connecting to API...")
-    
-    result = await interfacer.react_image(attachment)
-
-    print("Prediction result:", result)
-
-    print("Reacting...")
-
-    past_acc = 6.0
-    orig_acc = result[0][2]
-    for cur_reaction in result:
-        print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
-        if (cur_reaction[2]/past_acc) < 0.3 or (cur_reaction[2]/orig_acc) < 0.7:
-            if cur_reaction[2] == orig_acc:
-                await message.add_reaction('❓')
-                await message.add_reaction('❔')
-            break
-        else:
-            past_acc = cur_reaction[2]
-            await message.add_reaction(cur_reaction[1])
-    print("Done.")
-    return
-
 async def start_typing(message):
     global client
 
@@ -244,34 +218,16 @@ def init_discord_bot():
             
             if message.content[:9] == ".complete" or message.content[:9] == ".continue":
                 in_text = message.content[10:]
-                # print("->"+in_text+"<-")
 
-                if(in_text == ''):
-                    await message.channel.send("Bot can't take empty prompts!")
-                    await client.change_presence(activity=discord.Game(name='with AI | READY'))
-                    return
-
-                # Manual typing as this part can last quite long
                 await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))
-                async with message.channel.typing():
-                    raw_output_message = await interfacer.complete(in_text)
-                    # raw_output_message = raw_output_message.replace('\n', '\n> ')
-
-                    if raw_output_message.find("<|endoftext|>") != -1:
-                        raw_output_message = raw_output_message[:raw_output_message.find("<|endoftext|>")]
-
-                    if raw_output_message == "BUSY":
-                        print("API Rate limit")
-                        await message.add_reaction('🟥')
-                        # await message.add_reaction('<:dino_dark:790119668815364097>')
-                        await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
-                        return
-
-                    OUTPUT_MESSAGE = "       __**Generation result:**__\n***" + in_text + "*** `" + str(raw_output_message) +"`"
+                OUTPUT_MESSAGE = await processor.complete(in_text, message)
 
             else:
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
                 return
+
+        if OUTPUT_MESSAGE == "NO_OUTPUT":
+            return
 
         LEN_CAP = 1950
         while len(OUTPUT_MESSAGE) >= LEN_CAP:
