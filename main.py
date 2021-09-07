@@ -102,8 +102,8 @@ def init_discord_bot():
                 if attachment.filename[-4:].lower() in IMAGE_EXTS:
                     print("Reacting to image:", str(attachment.url))
 
-                    await react_image(message, attachment.url)
-            return
+                    await processor.react_image(message, attachment.url)
+            # return
 
         if len(message.content) == 0: # Attachment only
             return
@@ -167,7 +167,7 @@ def init_discord_bot():
                 await msg_alert.delete()
             return
 
-        elif str(message.author) in presets.POWERFUL:
+        elif str(message.author) in presets.POWERFUL and message.content[0] == '!':
             command = message.content[1:]
             if(command == "clearhist"):
                 await start_typing(message)
