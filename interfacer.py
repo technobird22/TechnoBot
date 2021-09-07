@@ -70,21 +70,6 @@ def exit_things():
     '''Save queue, logs, etc.'''
     return
 
-def respond_raw_inp(cur_inp):
-    '''Take raw input and return unformatted output for the given number of iterations'''
-    print("Generating...")
-
-    start_time = time.time()
-
-    output_msg = respond(cur_inp)
-
-    elapsed = time.time() - start_time
-
-    print("=" * 30 + " Generated Response: " + "=" * 30)
-    print("Elapsed", round(elapsed, 1), "seconds. Generated:\n", output_msg)
-    print("=" * 80)
-    return output_msg
-
 def initialise():
     print("Initialising interfaces...")
     init_params()
