@@ -135,7 +135,7 @@ def init_discord_bot():
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
             global bot_start_msg
             greetings = ["Hello", "Hewwo", "Henlo", "G'day", "Howdy", "Bonjour", "Hola", "Guten Tag", "Nǐ hǎo", "你好"]
-            good_things = ["great", "lovely", "wonderful", "awesome", "wonderful", "marvellous", "magnificent", "superb", "glorious", "lovely", "delightful"]
+            good_things = ["great", "lovely", "wonderful", "awesome", "wonderful", "marvellous", "magnificent", "superb", "glorious", "lovely", "delightful", "fantastic", "amazing", "excellent", "incredible", "brilliant", "fabulous"]
             vowels = ['a', 'e', 'i', 'o', 'u']
             start_emote = [
                 '🦊', '🐺', '😄', '😁', '🙂', '😉',
