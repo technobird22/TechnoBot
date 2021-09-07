@@ -1,5 +1,7 @@
 '''Takes inputs and parses and queues them to interface with the API'''
 import interfacer
+import random
+import presets
 
 async def complete(in_text, message):
     if in_text == '':
@@ -7,19 +9,22 @@ async def complete(in_text, message):
 
     # Manual typing as this part can last quite long
     async with message.channel.typing():
+        loading_emote = random.choice(presets.LOADING_EMOTES)
+        await message.add_reaction(loading_emote)
         raw_output_message = await interfacer.complete(in_text)
         # raw_output_message = raw_output_message.replace('\n', '\n> ')
+        await message.clear_reaction(loading_emote)
 
         if raw_output_message.find("<|endoftext|>") != -1:
             raw_output_message = raw_output_message[:raw_output_message.find("<|endoftext|>")]
 
         if raw_output_message == "BUSY":
             print("API Rate limit")
-            await message.add_reaction('🟥')
-            # await message.add_reaction('<:dino_dark:790119668815364097>')
+            await message.add_reaction(random.choice(presets.BUSY_EMOTES))
             await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
             return "NO_OUTPUT"
 
+        await message.add_reaction('✅')
         return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
 
 async def react_image(message, attachment):
