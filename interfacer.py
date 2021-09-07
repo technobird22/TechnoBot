@@ -77,5 +77,4 @@ def initialise():
 if __name__ == '__main__':
     init_params()
 
-    # raw_inp(5)
-    print("This is a module and is not supposed to be run directly.\nPlease use main.py instead")
+    print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")
