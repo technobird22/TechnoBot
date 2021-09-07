@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 import presets
 import interfacer
+import processor
 
 async def fetch(url, extension):
     temp_id = 0
@@ -35,32 +36,6 @@ async def fetch(url, extension):
     except:
         print("Error downloading or saving file.")
         raise
-
-async def react_image(message, attachment):
-    global client
-
-    print("Connecting to API...")
-    
-    result = await interfacer.react_image(attachment)
-
-    print("Prediction result:", result)
-
-    print("Reacting...")
-
-    past_acc = 6.0
-    orig_acc = result[0][2]
-    for cur_reaction in result:
-        print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
-        if (cur_reaction[2]/past_acc) < 0.3 or (cur_reaction[2]/orig_acc) < 0.7:
-            if cur_reaction[2] == orig_acc:
-                await message.add_reaction('❓')
-                await message.add_reaction('❔')
-            break
-        else:
-            past_acc = cur_reaction[2]
-            await message.add_reaction(cur_reaction[1])
-    print("Done.")
-    return
 
 async def start_typing(message):
     global client
@@ -139,7 +114,7 @@ def init_discord_bot():
                             if attachment.filename[-4:].lower() in IMAGE_EXTS:
                                 print("Reacting to image:", str(attachment.url))
 
-                                await react_image(cur_message, attachment.url)
+                                await processor.react_image(cur_message, attachment.url)
                 except discord.errors.HTTPException:
                     print("Error emote not found...")
                     pass
