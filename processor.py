@@ -1,7 +1,20 @@
 '''Takes inputs and parses and queues them to interface with the API'''
-import interfacer
+import re
+import requests
 import random
+import discord
+
+import interfacer
 import presets
+
+def get_urls(in_text):
+    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    urls = [x[0] for x in re.findall(regex, in_text)]
+    return [out[:(len(out) if out.find('?')==-1 else out.find('?'))] for out in urls]
+
+def is_url_img(url):
+    r = requests.head(url)
+    return r.headers["content-type"].startswith('image/')
 
 async def complete(in_text, message):
     if in_text == '':
@@ -25,7 +38,12 @@ async def complete(in_text, message):
             return "NO_OUTPUT"
 
         await message.add_reaction('✅')
-        return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
+        embedVar = discord.Embed(title="Completion result:", description="Generated using `GPT-J-6B`, temp=`0.8`, top-k=`0.9`", color=0x00ff00)
+        embedVar.add_field(name="Input:", value=in_text, inline=False)
+        embedVar.add_field(name="Output:", value=str(raw_output_message), inline=False)
+        await message.channel.send(embed=embedVar)
+        return "NO_OUTPUT"
+        # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
 
 async def react_image(message, attachment):
     global client
@@ -55,4 +73,6 @@ async def react_image(message, attachment):
 
 
 if __name__ == '__main__':
-    print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")
+    import main
+    main.start_all()
+    # print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")

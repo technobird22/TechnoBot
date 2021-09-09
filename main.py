@@ -69,15 +69,10 @@ def init_discord_bot():
         if message.author == client.user:
             return
 
-        if len(message.attachments) != 0: # Contains attachment
-            print("Received attachment(s):", message.attachments)
-            IMAGE_EXTS = ['.png', '.jpg', '.jpeg', 'gif']
-            for attachment in message.attachments:
-                if attachment.filename[-4:].lower() in IMAGE_EXTS:
-                    print("Reacting to image:", str(attachment.url))
-
-                    await processor.react_image(message, attachment.url)
-            # return
+        for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
+            if processor.is_url_img(url):
+                print("Reacting to image:", url)
+                await processor.react_image(message, url)
 
         if len(message.content) == 0: # Attachment only
             return
