@@ -203,6 +203,12 @@ def init_discord_bot():
             #     await client.change_presence(activity=discord.Game(name='with AI | READY'))
             #     return
 
+            try:
+                await message.channel.send(presets.PRESET_RESPONSES[str(message.content)])
+            except KeyError:
+                pass
+                
+
             if str(presets.BOT_ID) in message.content:
                 await message.channel.send("Hey there, the bot is currently in **non finetuned raw mode**. This means the bot should be more generic.\n\nPlease use the command `.raw` before your message to feed it into the bot")
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
