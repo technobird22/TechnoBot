@@ -69,6 +69,11 @@ def init_discord_bot():
         if message.author == client.user:
             return
 
+        print("="*50)
+        print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.\nAttachments: '" + str(message.attachments) + '.')
+
+        print('URLS:', processor.get_urls(message.content))
+
         for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
             if processor.is_url_img(url):
                 print("Reacting to image:", url)
@@ -77,13 +82,10 @@ def init_discord_bot():
         if len(message.content) == 0: # Attachment only
             return
 
-        print("="*50)
-        print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.\nAttachments: '" + str(message.attachments) + '.')
-
-        print('URLS:', processor.get_urls(message.content))
-
         if str(message.channel) not in presets.ALLOWED_CHANNELS:
             print("[x] REJECTING MESSAGE FROM CHANNEL: " + str(message.channel) + "...")
+
+
 
         OUTPUT_MESSAGE = "You shouldn't be seeing this... Please contact '" + presets.OWNER_TAG + "' on Discord to report this.\nThanks :)"
 
