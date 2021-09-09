@@ -73,7 +73,9 @@ def fetch(url_or_path):
         fd.write(r.content)
         fd.seek(0)
         return fd
-    return open(url_or_path, 'rb')
+    print("WARNING: NOT AN URL")
+    raise
+    # return open(url, 'rb')
 
 def react_image(path):
     global preprocess, text_features
