@@ -65,9 +65,9 @@ def home():
 
 ###########################
 
-def fetch(url_or_path):
-    if str(url_or_path).startswith('http://') or str(url_or_path).startswith('https://'):
-        r = requests.get(url_or_path)
+def fetch(url):
+    if str(url).startswith('http://') or str(url).startswith('https://'):
+        r = requests.get(url)
         r.raise_for_status()
         fd = io.BytesIO()
         fd.write(r.content)
