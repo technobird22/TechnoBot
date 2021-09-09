@@ -83,7 +83,9 @@ def init_discord_bot():
             return
 
         print("="*50)
-        print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.")
+        print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.\nAttachments: '" + str(message.attachments) + '.')
+
+        print('URLS:', processor.get_urls(message.content))
 
         if str(message.channel) not in presets.ALLOWED_CHANNELS:
             print("[x] REJECTING MESSAGE FROM CHANNEL: " + str(message.channel) + "...")
