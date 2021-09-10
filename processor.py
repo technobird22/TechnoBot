@@ -57,11 +57,14 @@ async def react_image(message, attachment):
 
     print("Reacting...")
 
+    LPROP_limit = 0.3
+    MPROP_limit = 0.7
+
     past_acc = 6.0
     orig_acc = result[0][2]
     for cur_reaction in result:
         print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
-        if (cur_reaction[2]/past_acc) < 0.3 or (cur_reaction[2]/orig_acc) < 0.7:
+        if (cur_reaction[2]/past_acc) < LPROP_limit and (cur_reaction[2]/orig_acc) < MPROP_limit:
             if cur_reaction[2] == orig_acc:
                 await message.add_reaction('❓')
                 # await message.add_reaction('❔')
