@@ -39,6 +39,7 @@ async def discord_announce(msg):
 def init_discord_bot():
     global client, START_TIME, clean_start
 
+    clean_start = presets.SEND_INIT_MESSAGE
     # client.change_presence(activity=discord.Game(name='with AI | Connecting...'))
 
     @client.event
