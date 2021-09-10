@@ -39,13 +39,13 @@ async def discord_announce(msg):
 def init_discord_bot():
     global client, START_TIME, clean_start
 
-    clean_start = 1
-
     # client.change_presence(activity=discord.Game(name='with AI | Connecting...'))
 
     @client.event
     async def on_ready():
-        global bot_start_msg
+        global bot_start_msg, clean_start
+
+        clean_start = presets.SEND_INIT_MESSAGE
 
         joined_servers = "\n".join(("+ Connected to server: '" + guild.name + "' (ID: " + str(guild.id) + ").") for guild in client.guilds)
         elapsed_time = str(round(time.time() - START_TIME, 1))
