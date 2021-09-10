@@ -99,7 +99,7 @@ def react_image(path):
     text_features /= text_features.norm(dim=-1, keepdim=True)
     similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
 
-    accuracies, indices = similarity[0].topk(5)
+    accuracies, indices = similarity[0].topk(10)
 
     for prediction in zip(indices, accuracies):
         accuracy = round(100 * prediction[1].item(), 2)
