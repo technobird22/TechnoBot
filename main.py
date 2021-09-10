@@ -73,6 +73,11 @@ def init_discord_bot():
         print("="*50)
         print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.\nAttachments: '" + str(message.attachments) + '.')
 
+
+        if str(message.channel).startswith('Direct Message with ') and presets.IGNORE_DIRECT_MESSAGE and not str(message.channel) == 'Direct Message with ' + presets.OWNER_TAG:
+            print("Ignoring Direct message.")
+            return
+
         print('URLS:', processor.get_urls(message.content))
 
         for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
