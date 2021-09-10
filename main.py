@@ -22,7 +22,7 @@ async def start_typing(message):
 
     await client.change_presence(activity=discord.Game(name='with AI | THINKING...'))
     async with message.channel.typing():
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
 
 async def discord_announce(msg):
     return
@@ -52,7 +52,7 @@ def init_discord_bot():
         elapsed_time = str(round(time.time() - START_TIME, 1))
         print(joined_servers)
 
-        time.sleep(1)
+        await asyncio.sleep(1)
 
         await client.change_presence(activity=discord.Game(name='with AI | READY'))
         await discord_announce('**Bot is** `READY`!')
@@ -108,7 +108,7 @@ def init_discord_bot():
             await start_typing(message)
             print("\nPrinting about... ")
             OUTPUT_MESSAGE = presets.about_message
-            time.sleep(1)
+            await asyncio.sleep(1)
 
         # Commands that require power ('!')
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
@@ -156,7 +156,7 @@ def init_discord_bot():
                 
                 discord_announce('**Bot is** `STOPPING`!')
                 client.change_presence(activity=discord.Game(name='with AI | STOPPING'))
-                time.sleep(5)
+                await asyncio.sleep(5)
                 raise KeyboardInterrupt
                 exit()
 
@@ -171,7 +171,7 @@ def init_discord_bot():
                 interfacer.change_len(intlen)
                 await message.channel.send('Done! New settings now in place.')
                 
-                time.sleep(1)
+                await asyncio.sleep(1)
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
                 return
 
@@ -186,7 +186,7 @@ def init_discord_bot():
                 interfacer.change_temp(intlen)
                 await message.channel.send('Done! New settings now in place.')
 
-                time.sleep(1)
+                await asyncio.sleep(1)
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
                 return
 
