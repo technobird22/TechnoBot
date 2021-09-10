@@ -46,7 +46,7 @@ async def complete(in_text, message):
         embedVar = discord.Embed(title="Completion result:", description="Generated using `GPT-J-6B`, temp=`0.8`, top-k=`0.9`", color=0x00ff00)
         embedVar.add_field(name="Input:", value=in_text, inline=False)
         embedVar.add_field(name="Output:", value=str(raw_output_message), inline=False)
-        await message.channel.send(embed=embedVar)
+        await message.reply(embed=embedVar)
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
 
