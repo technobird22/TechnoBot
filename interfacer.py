@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import requests
+import aiohttp
 
 import json
 import numpy as np
@@ -37,16 +38,16 @@ async def react_image(url_in):
 
     print("Querying server...")
     start_time = time.time()
-    response = requests.get(presets.EMOTE_SERVER, params=params)
-
-    if response.status_code == 200:
-        print("Query received! Elapsed:", round(time.time()-start_time,2), "seconds.")
-        return response.json()
-    else:
-        print("Error accessing API!")
-        print(response.status_code)
-        print(response.content)
-        return "API_ERROR"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(presets.EMOTE_SERVER, params=params) as response:
+            if response.status == 200:
+                print("Query received! Elapsed:", round(time.time()-start_time,2), "seconds.")
+                return await response.json()
+            else:
+                print("Error accessing API!")
+                print(response.status)
+                print(response.content)
+                return "API_ERROR"
 
 async def complete(txt_in):
     '''Respond to a given prompt'''  
@@ -55,16 +56,16 @@ async def complete(txt_in):
 
     print("Querying server...")
     start_time = time.time()
-    response = requests.get(presets.COMPLETION_SERVER, params=params)
-
-    if response.status_code == 200:
-        print("Query received! Elapsed:", round(time.time()-start_time,2), "seconds.")
-        return response.json()
-    else:
-        print("Error accessing API!")
-        print(response.status_code)
-        print(response.content)
-        return "API_ERROR"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(presets.COMPLETION_SERVER, params=params) as response:
+            if response.status == 200:
+                print("Query received! Elapsed:", round(time.time()-start_time,2), "seconds.")
+                return await response.json()
+            else:
+                print("Error accessing API!")
+                print(response.status)
+                print(response.content)
+                return "API_ERROR"
 
 def exit_things():
     '''Save queue, logs, etc.'''
