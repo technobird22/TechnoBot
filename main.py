@@ -226,6 +226,7 @@ def init_discord_bot():
                 return
 
         if OUTPUT_MESSAGE == "NO_OUTPUT":
+            await client.change_presence(activity=discord.Game(name='with AI | READY'))
             return
 
         LEN_CAP = 1950
