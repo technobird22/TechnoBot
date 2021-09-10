@@ -204,6 +204,8 @@ def init_discord_bot():
 
             try:
                 await message.channel.send(presets.PRESET_RESPONSES[str(message.content)])
+                await client.change_presence(activity=discord.Game(name='with AI | READY'))
+                return
             except KeyError:
                 pass
                 
