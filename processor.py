@@ -59,6 +59,7 @@ async def react_image(message, attachment):
 
     print("Reacting...")
 
+    # Reactions are added if they pass a threshold for being a large enough proportion (PROP) of the last reaction (L), or main reaction (M)
     LPROP_limit = 0.3
     MPROP_limit = 0.7
 
