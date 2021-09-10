@@ -63,7 +63,7 @@ def init_discord_bot():
 
     @client.event
     async def on_message(message):
-        global history, TARGET_CHANNEL, rem_msgs, clean_start
+        global history, clean_start
 
         START_TIME = time.time()
 
@@ -252,10 +252,9 @@ def init_discord_bot():
 
 def start_all():
     '''Start everything to run model'''
-    global client, TARGET_CHANNEL, START_TIME, SELF_TAG, history, rem_msgs
+    global client, START_TIME, history
 
     START_TIME = time.time()
-    rem_msgs = 0
     history = "\n"
 
     print("[INFO] Starting script...", flush=True)
@@ -281,7 +280,6 @@ def start_all():
     # Get discord tokens
     print("[INFO] Getting Discord token...", flush=True)
     token = os.getenv('DISCORD_TOKEN')
-    TARGET_CHANNEL = [103, 101, 110, 101, 114, 97, 108]
     print("[OK] Got Discord token!", flush=True)
 
     print("[OK] Running Discord bot...", flush=True)

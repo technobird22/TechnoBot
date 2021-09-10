@@ -17,10 +17,6 @@ def is_url_img(url):
     print("HEADER:", r.headers["content-type"])
     return r.headers["content-type"].startswith('image/')
 
-def is_url_gif(url):
-    r = requests.head(url)
-    return r.headers["content-type"].startswith('image/gif')
-
 async def complete(in_text, message):
     if in_text == '':
         return "Bot can't take empty prompts!"
