@@ -81,7 +81,7 @@ def init_discord_bot():
         print('URLS:', processor.get_urls(message.content))
 
         for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
-            if processor.is_url_img(url):
+            if await processor.is_url_img(url):
                 print("Reacting to image:", url)
                 await processor.react_image(message, url)
 

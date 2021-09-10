@@ -1,6 +1,7 @@
 '''Takes inputs and parses and queues them to interface with the API'''
 import re
 import requests
+import aiohttp
 import random
 import discord
 
@@ -12,10 +13,11 @@ def get_urls(in_text):
     urls = [x[0] for x in re.findall(regex, in_text)]
     return [out[:(len(out) if out.find('?')==-1 else out.find('?'))] for out in urls]
 
-def is_url_img(url):
-    r = requests.head(url)
-    print("HEADER:", r.headers["content-type"])
-    return r.headers["content-type"].startswith('image/')
+async def is_url_img(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.head(url) as response:
+            print("HEADER:", response.headers["content-type"])
+            return response.headers["content-type"].startswith('image/')
 
 async def complete(in_text, message):
     if in_text == '':
