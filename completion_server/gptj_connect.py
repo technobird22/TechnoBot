@@ -39,7 +39,7 @@ def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
         print(response.content)
         return "API_ERROR"
 
-def query(qry):
+async def query(qry):
     global last_qry
 
     rate_limit = (time.time() - last_qry) < 30 # bool whether it's currently rate limited
