@@ -63,9 +63,9 @@ async def react_image(message, attachment):
     # Absolute Prop refers to the absolute percentage match
     LPROP_limit = 0.3
     MPROP_limit = 0.1
-    APROP_limit = 0.03
+    APROP_limit = 0.02
 
-    past_acc = 6.0
+    past_acc = 0.0
     orig_acc = result[0][2]
     for cur_reaction in result:
         if (cur_reaction[2]/100)<APROP_limit or (cur_reaction[2]/past_acc) < LPROP_limit or (cur_reaction[2]/orig_acc) < MPROP_limit:
