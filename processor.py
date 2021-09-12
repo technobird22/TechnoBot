@@ -65,8 +65,8 @@ async def react_image(message, attachment):
 
     # Reactions are added if they pass a threshold for being a large enough proportion (PROP) of the last reaction (L), or main reaction (M)
     # Absolute Prop refers to the absolute percentage match
-    LPROP_limit = 0.3
-    MPROP_limit = 0.1
+    LPROP_limit = 0.31
+    MPROP_limit = 0.5
     APROP_limit = 0.02
 
     past_acc = 0.01
