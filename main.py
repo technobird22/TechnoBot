@@ -78,7 +78,7 @@ def init_discord_bot():
             print("Ignoring Direct message.")
             return
 
-        print('URLS:', processor.get_urls(message.content))
+        # print('URLS:', processor.get_urls(message.content))
 
         for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
             if await processor.is_url_img(url):
