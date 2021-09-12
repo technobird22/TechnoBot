@@ -9,7 +9,7 @@ headers = {"Accept": "application/json","Content-Type": "application/json","User
 errors = ["RATE_LIMITED", "API_ERROR", "NO_PROMPT"]
 
 # Adding empty header as parameters are being sent in payload
-async def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
+async def run_prompt(query_input, length=128, temp=0.8, top_p=0.9):
     global last_qry
 
     if query_input is None or query_input == '':
@@ -39,7 +39,7 @@ async def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
                 print(response.content)
                 return "API_ERROR"
 
-async def query(qry):
+async def query(qry, length, temp, top_p):
     global last_qry
 
     rate_limit = (time.time() - last_qry) < 30 # bool whether it's currently rate limited
@@ -47,7 +47,7 @@ async def query(qry):
         print("Warning; Predicted rate limit.")
         return "BUSY"
 
-    result = await run_prompt(qry)
+    result = await run_prompt(qry, length=length, temp=temp, top_p=top_p)
     if result not in errors:
         print("RESULT:", result)
         return result
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         result = "NO_PROMPT"
 
         while result in errors:
-            result = run_prompt(q)
+            result = run_prompt(q, 128, 0.8, 0.9)
             if result not in errors:
                 print(result)
                 print("Waiting for rate limit to pass...")

@@ -22,7 +22,7 @@ async def is_url_img(url):
             print("HEADER:", response.headers["content-type"])
             return response.headers["content-type"].startswith('image/')
 
-async def complete(in_text, message):
+async def complete(in_text, message, length, temp, top_p):
     if in_text == '':
         return "Bot can't take empty prompts!"
 
@@ -31,7 +31,7 @@ async def complete(in_text, message):
         START_TIME = time.time()
         loading_emote = random.choice(presets.LOADING_EMOTES)
         await message.add_reaction(loading_emote)
-        raw_output_message = await interfacer.complete(in_text)
+        raw_output_message = await interfacer.complete(in_text, length=length, temp=temp, top_p=top_p)
         # raw_output_message = raw_output_message.replace('\n', '\n> ')
         await message.clear_reaction(loading_emote)
 
@@ -53,7 +53,7 @@ async def complete(in_text, message):
         parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
 
 
-        embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, temp=0.8, top_p=0.9. Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embedVar.description += '\n***' + in_text + '*** ' + raw_output_message[:LEN_CAP] + '...'
         embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
         print("SENDING:", raw_output_message[:LEN_CAP])

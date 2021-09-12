@@ -50,7 +50,7 @@ async def react_image(url_in):
 
 async def complete(txt_in, length, temp, top_p):
     '''Respond to a given prompt'''  
-    params = {"query_text": txt_in}
+    params = {"query_text": txt_in, "length": length, "temp": str(temp), "top_p": str(top_p)}
     # print(query)
 
     print("Querying server...")

@@ -32,9 +32,10 @@ def home():
 ###########################
 
 @app.get("/engines/completion")
-async def completion(query_text: str):
+async def completion(query_text: str, top_p: float, temp: float, length: int):
+    print("top_p:", top_p, "   temp:", temp, "   length:", length)
     print("Completing text:", query_text)
-    return await gptj_connect.query(query_text)
+    return await gptj_connect.query(query_text, length, temp, top_p)
 
 ############################
 
