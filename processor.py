@@ -4,6 +4,7 @@ import requests
 import aiohttp
 import random
 import time
+import datetime
 import discord
 
 import interfacer
@@ -43,8 +44,11 @@ async def complete(in_text, message):
             return "NO_OUTPUT"
 
         await message.add_reaction('✅')
-        embedVar = discord.Embed(title="Generation Result:", description="Generated with `GPT-J-6B`, at temperature `0.8` and top_p `0.9`.\n*Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*\nRequested by `" + str(message.author) + "`  at  <t:" + str(round(time.time())) + ":T>", color=0x00ff00)
-        embedVar.add_field(name="Result:", value='[📝]' + in_text + '... [🤖] ...' + str(raw_output_message), inline=False)
+        embedVar = discord.Embed(title="Generation Result", description="Generated with `GPT-J-6B`, at temperature `0.8` and top_p `0.9`.   *Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*", color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        # embedVar = discord.Embed(title="Generation Result", description="`GPT-J-6B`, temp=`0.8` top_p=`0.9`. *Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*", color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        embedVar.add_field(name="__Result:__", value='***' + in_text + '*** ' + str(raw_output_message), inline=False)
+        embedVar.set_footer(text="Requested by " + str(message.author))
+
         await message.reply(embed=embedVar)
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
