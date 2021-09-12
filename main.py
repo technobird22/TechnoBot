@@ -225,11 +225,16 @@ def init_discord_bot():
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
                 return
             
+            if message.content[:10] == ".lcomplete" or message.content[:10] == ".lcontinue":
+                in_text = message.content[11:]
+
+                await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))
+                OUTPUT_MESSAGE = await processor.complete(in_text, message, length=1024, temp=0.8, top_p=0.9)
             if message.content[:9] == ".complete" or message.content[:9] == ".continue":
                 in_text = message.content[10:]
 
                 await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))
-                OUTPUT_MESSAGE = await processor.complete(in_text, message)
+                OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
             else:
                 await client.change_presence(activity=discord.Game(name='with AI | READY'))
