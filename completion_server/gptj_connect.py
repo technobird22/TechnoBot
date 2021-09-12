@@ -1,6 +1,6 @@
 import json
 import time
-import requests
+import aiohttp
 
 last_qry = time.time() - 30 # Last query was over 30 seconds ago (hopefully)
 
@@ -9,7 +9,7 @@ headers = {"Accept": "application/json","Content-Type": "application/json","User
 errors = ["RATE_LIMITED", "API_ERROR", "NO_PROMPT"]
 
 # Adding empty header as parameters are being sent in payload
-def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
+async def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
     global last_qry
 
     if query_input is None or query_input == '':
@@ -22,22 +22,22 @@ def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
 
     print("Querying server...")
     start_time = time.time()
-    response = requests.post(url, data=json.dumps(query), headers=headers)
-
-    if response.status_code == 200:
-        print("Result received! Elapsed:", round(time.time()-start_time,2), "seconds.")
-        # print(response.json()[0]['generated_text'])
-        last_qry = time.time()
-        return response.json()[0]['generated_text']
-    elif response.status_code == 503:
-        print("You are being rate limited by the API! :/")
-        last_qry = time.time() # wait another 30 seconds
-        return "RATE_LIMITED"
-    else:
-        print("Error accessing API!")
-        print(response.status_code)
-        print(response.content)
-        return "API_ERROR"
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, data=json.dumps(query), headers=headers) as response:
+            if response.status == 200:
+                print("Result received! Elapsed:", round(time.time()-start_time,2), "seconds.")
+                # print(response.json()[0]['generated_text'])
+                last_qry = time.time()
+                return (await response.json())[0]['generated_text']
+            elif response.status == 503:
+                print("You are being rate limited by the API! :/")
+                last_qry = time.time() # wait another 30 seconds
+                return "RATE_LIMITED"
+            else:
+                print("Error accessing API!")
+                print(response.status)
+                print(response.content)
+                return "API_ERROR"
 
 async def query(qry):
     global last_qry
@@ -46,7 +46,7 @@ async def query(qry):
     if rate_limit:
         print("Warning; Predicted rate limit.")
         return "BUSY"
-    result = run_prompt(qry)
+    result = await run_prompt(qry)
     if result not in errors:
         print("RESULT:", result)
         return result
