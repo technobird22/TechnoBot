@@ -32,7 +32,7 @@ def init_params():
 
 async def react_image(url_in):
     '''Respond to a given image'''  
-    params = "url=" + str(url_in)
+    params = {"url": url_in}
     # print(query)
 
     print("Querying server...")
@@ -48,9 +48,9 @@ async def react_image(url_in):
                 print(response.content)
                 return "API_ERROR"
 
-async def complete(txt_in):
+async def complete(txt_in, length, temp, top_p):
     '''Respond to a given prompt'''  
-    params = "query_text=" + str(txt_in)
+    params = {"query_text": txt_in}
     # print(query)
 
     print("Querying server...")
@@ -75,6 +75,4 @@ def initialise():
     init_params()
 
 if __name__ == '__main__':
-    init_params()
-
     print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")
