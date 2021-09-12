@@ -43,9 +43,8 @@ async def complete(in_text, message):
             return "NO_OUTPUT"
 
         await message.add_reaction('✅')
-        embedVar = discord.Embed(title="Completion result:", description="*Generated with* `GPT-J-6B`, *temp=*`0.8`, *top-k=*`0.9`.\n*Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*\nRequested by `" + str(message.author) + "`  at  <t:" + str(round(time.time())) + ":T>", color=0x00ff00)
-        embedVar.add_field(name="Input:", value=in_text, inline=False)
-        embedVar.add_field(name="Output:", value=str(raw_output_message), inline=False)
+        embedVar = discord.Embed(title="Generation Result:", description="Generated with `GPT-J-6B`, at temperature `0.8` and top_p `0.9`.\n*Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*\nRequested by `" + str(message.author) + "`  at  <t:" + str(round(time.time())) + ":T>", color=0x00ff00)
+        embedVar.add_field(name="Result:", value='[📝]' + in_text + '... [🤖] ...' + str(raw_output_message), inline=False)
         await message.reply(embed=embedVar)
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
