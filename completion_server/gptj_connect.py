@@ -25,8 +25,8 @@ def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
     response = requests.post(url, data=json.dumps(query), headers=headers)
 
     if response.status_code == 200:
-        print("Completion received! Elapsed:", round(time.time()-start_time,2), "seconds.")
-        print(response.json()[0]['generated_text'])
+        print("Result received! Elapsed:", round(time.time()-start_time,2), "seconds.")
+        # print(response.json()[0]['generated_text'])
         last_qry = time.time()
         return response.json()[0]['generated_text']
     elif response.status_code == 503:
@@ -48,7 +48,7 @@ async def query(qry):
         return "BUSY"
     result = run_prompt(qry)
     if result not in errors:
-        print(result)
+        print("RESULT:", result)
         return result
     elif result == "RATE_LIMITED":
         print("Warning! Reached API Rate limit!")
