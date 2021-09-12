@@ -47,27 +47,39 @@ async def complete(in_text, message):
         await message.add_reaction('✅')
 
 
-        LEN_CAP = 800
+        LEN_CAP = max(1, 1900 - len(in_text))
+        print("LC:", LEN_CAP)
         part_num = 1
-        parts_cnt = math.ceil((len(raw_output_message)+1)/LEN_CAP)
-        while len(raw_output_message) >= LEN_CAP:
-            embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, temp=0.8, top_p=0.9. Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
-            embedVar.add_field(name="__Result:__", value='***' + in_text + '*** ' + raw_output_message[:LEN_CAP], inline=False)
-            embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
-            part_num += 1
-            print("SENDING:", raw_output_message[:LEN_CAP])
+        parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
 
-            if len(raw_output_message) >= LEN_CAP:
-                raw_output_message = raw_output_message[LEN_CAP:]
-            await message.reply(embed=embedVar,
-                    allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
 
         embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, temp=0.8, top_p=0.9. Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
-        embedVar.add_field(name="__Result:__", value='***' + in_text + '*** ' + raw_output_message[:LEN_CAP], inline=False)
+        embedVar.description += '\n***' + in_text + '*** ' + raw_output_message[:LEN_CAP] + '...'
         embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
         print("SENDING:", raw_output_message[:LEN_CAP])
         await message.reply(embed=embedVar,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+        if len(raw_output_message) >= LEN_CAP:
+            raw_output_message = raw_output_message[LEN_CAP:]
+        else:
+            raw_output_message = ''
+
+        LEN_CAP = 1900
+        while len(raw_output_message) > 0:
+            part_num += 1
+
+            embedVar = discord.Embed(title="Generation Result (continued)", description='', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+            embedVar.description += '...' + raw_output_message[:LEN_CAP] + '...'
+            embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
+            print("SENDING:", raw_output_message[:LEN_CAP])
+            await message.reply(embed=embedVar,
+                    allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+            if len(raw_output_message) >= LEN_CAP:
+                raw_output_message = raw_output_message[LEN_CAP:]
+            else:
+                break
 
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
