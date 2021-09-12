@@ -3,6 +3,7 @@ import re
 import requests
 import aiohttp
 import random
+import time
 import discord
 
 import interfacer
@@ -25,6 +26,7 @@ async def complete(in_text, message):
 
     # Manual typing as this part can last quite long
     async with message.channel.typing():
+        START_TIME = time.time()
         loading_emote = random.choice(presets.LOADING_EMOTES)
         await message.add_reaction(loading_emote)
         raw_output_message = await interfacer.complete(in_text)
@@ -41,7 +43,7 @@ async def complete(in_text, message):
             return "NO_OUTPUT"
 
         await message.add_reaction('✅')
-        embedVar = discord.Embed(title="Completion result:", description="Generated using `GPT-J-6B`, temp=`0.8`, top-k=`0.9`", color=0x00ff00)
+        embedVar = discord.Embed(title="Completion result:", description="*Generated with* `GPT-J-6B`, *temp=*`0.8`, *top-k=*`0.9`.\n*Elapsed:* `" + str(round(time.time()-START_TIME, 1)) + "` *seconds.*\nRequested by `" + str(message.author) + "`  at  <t:" + str(round(time.time())) + ":T>", color=0x00ff00)
         embedVar.add_field(name="Input:", value=in_text, inline=False)
         embedVar.add_field(name="Output:", value=str(raw_output_message), inline=False)
         await message.reply(embed=embedVar)
