@@ -96,6 +96,11 @@ def init_discord_bot():
         OUTPUT_MESSAGE = "You shouldn't be seeing this... Please contact '" + presets.OWNER_TAG + "' on Discord to report this.\nThanks :)"
 
         # User commands
+        if message.content.startswith(".goose"):
+            await start_typing(message)
+            goose_id = str(random.randint(0, 1000)).zfill(4)
+            print("Getting Goose... HONK!   ID:", goose_id)
+            OUTPUT_MESSAGE = presets.get_goose(goose_id)
         # if message.content.startswith(".complete"):
         #     await start_typing(message)
         #     print("\nGetting completion... ")
@@ -104,7 +109,7 @@ def init_discord_bot():
         #     OUTPUT_MESSAGE = '*' + message.content[10:] + '*' + '`' + result[0] + '`'
 
         # Info
-        if message.content == ".about" or message.content == ".info" or message.content == ".help":
+        elif message.content == ".about" or message.content == ".info" or message.content == ".help":
             await start_typing(message)
             print("\nPrinting about... ")
             OUTPUT_MESSAGE = presets.about_message
