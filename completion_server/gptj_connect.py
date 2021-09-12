@@ -17,7 +17,7 @@ async def run_prompt(query_input, top_p=0.9, temp=0.8, length=128):
         return "NO_INPUT"
     
     # print(query_input, top_p, temp, length)
-    query = {"context":str(query_input),"top-p":str(top_p),"temp":str(temp),"response-length":str(length),"remove-input":"1"}
+    query = {"context":str(query_input),"topP":str(top_p),"temp":str(temp),"response_length":str(length),"remove-input":"true"}
     # print(query)
 
     print("Querying server...")

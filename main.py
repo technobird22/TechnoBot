@@ -6,7 +6,6 @@ import os
 
 import time
 import random
-import requests
 import asyncio
 
 import discord
