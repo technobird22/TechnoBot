@@ -46,15 +46,19 @@ async def query(qry):
     if rate_limit:
         print("Warning; Predicted rate limit.")
         return "BUSY"
+
     result = await run_prompt(qry)
     if result not in errors:
         print("RESULT:", result)
         return result
+
     elif result == "RATE_LIMITED":
         print("Warning! Reached API Rate limit!")
         last_qry = time.time() # wait another 30 seconds
+        return "BUSY"
     else:
         print("ERROR: ", result)
+        return "WARNING: GENERAL ERROR"
 
 if __name__ == "__main__":
     for i in range(10):
