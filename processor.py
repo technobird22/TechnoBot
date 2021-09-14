@@ -135,6 +135,9 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
             return raw_output_message
 
         model_info = "`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`"
+        output = '\n***' + in_text + '*** ' + raw_output_message
+        parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
+        await long_output(message, model_info+output, parts_cnt)
 
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
