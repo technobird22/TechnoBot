@@ -43,7 +43,7 @@ async def adventure(message):
         return prompt
 
     history.append("[action] " + message.content + "\n")
-    result = await complete(prompt + '\n' + ''.join(history), message, length=64, temp=0.8, top_p=0.9, output_type="raw")
+    result = await complete(prompt + '\n' + ''.join(history), message, length=128, temp=0.8, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
         return "NO_OUTPUT"
@@ -53,6 +53,7 @@ async def adventure(message):
         print("start_index:", start_index)
         parsed_output = result[start_index:]
         parsed_output = parsed_output[:parsed_output.find(human_start)]
+        parsed_output = parsed_output.replace(bot_start + ' ', '')
         print("Parsed output:", parsed_output)
         print("Truncated:", result[:result.find(bot_start)])
     except:
