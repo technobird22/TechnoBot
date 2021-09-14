@@ -175,8 +175,11 @@ def init_discord_bot():
             except KeyError:
                 pass
 
+            if str(message.channel) in presets.ADVENTURE_CHANNELS:
+                print("Text adventure mode...")
+                OUTPUT_MESSAGE = await processor.adventure(message)
 
-            if message.content[:9] == ".complete" or message.content[:9] == ".continue":
+            elif message.content[:9] == ".complete" or message.content[:9] == ".continue":
                 in_text = message.content[10:]
 
                 await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))

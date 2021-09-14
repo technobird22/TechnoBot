@@ -1,4 +1,5 @@
 '''Takes inputs and parses and queues them to interface with the API'''
+import asyncio
 import re
 import requests
 import aiohttp
@@ -11,6 +12,9 @@ import discord
 import interfacer
 import presets
 
+history = []
+prompt = presets.ADVENTURE_PROMPT
+
 def get_urls(in_text):
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
     urls = [x[0] for x in re.findall(regex, in_text)]
@@ -22,7 +26,43 @@ async def is_url_img(url):
             print("HEADER:", response.headers["content-type"])
             return response.headers["content-type"].startswith('image/')
 
-async def complete(in_text, message, length, temp, top_p):
+async def adventure(message):
+    global history, prompt
+    bot_start = '[story]'
+    human_start = '[action]'
+
+    if message.content.startswith(">"):
+        print("IGNORING: MANUAL IGNORE")
+        return "NO_OUTPUT"
+
+    if message.content.startswith(".prompt "):
+        prompt = str(message.content)[9:]
+        return "Successfully set prompt!"
+
+    if message.content == ".getprompt":
+        return prompt
+
+    history.append("[action] " + message.content + "\n")
+    result = await complete(prompt + '\n' + ''.join(history), message, length=64, temp=0.8, top_p=0.9, output_type="raw")
+
+    if result == "API_BUSY":
+        return "NO_OUTPUT"
+
+    try:
+        start_index = result.find(bot_start)+len(bot_start)+1
+        print("start_index:", start_index)
+        parsed_output = result[start_index:]
+        parsed_output = parsed_output[:parsed_output.find(human_start)]
+        print("Parsed output:", parsed_output)
+        print("Truncated:", result[:result.find(bot_start)])
+    except:
+        return "huh."
+
+    history.append("[story] " + parsed_output + "\n")
+    return parsed_output
+
+
+async def complete(in_text, message, length, temp, top_p, output_type="embed"):
     if in_text == '':
         return "Bot can't take empty prompts!"
 
