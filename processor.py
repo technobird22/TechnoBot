@@ -51,18 +51,21 @@ async def adventure(message):
         print("IGNORING: MANUAL IGNORE")
         return "NO_OUTPUT"
 
-    history.append("[action] " + message.content[2:] + "\n")
-    result = await complete(prompt + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
+    print("ADDING:       [action] " + message.content[2:] + "\n")
+    result = await complete(prompt + ''.join(history) + "[action] " + message.content[2:] + "\n", message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
         history.pop()
         return "NO_OUTPUT"
 
+    # Save to history
+    history.append("[action] " + message.content[2:] + "\n")
+
     try:
         start_index = result.find(bot_start)+len(bot_start)+1
         print("start_index:", start_index)
         parsed_output = result[start_index:]
-        parsed_output = parsed_output[:parsed_output.find(human_start)]
+        parsed_output = parsed_output[:parsed_output.find(human_start)-1]
         parsed_output = parsed_output.replace(bot_start + ' ', '')
         print("Parsed output:", parsed_output)
         print("Truncated:", result[:result.find(bot_start)])
