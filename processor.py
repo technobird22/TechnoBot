@@ -67,6 +67,37 @@ async def adventure(message):
     history.append("[story] " + parsed_output + "\n")
     return parsed_output
 
+async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
+    LEN_CAP = max(1, 1900)
+    print("LC:", LEN_CAP)
+    part_num = 1
+
+    embedVar = discord.Embed(title="Generation Result", description=OUTPUT_MESSAGE[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+    embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
+    print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+    await message.reply(embed=embedVar,
+            allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+    if len(OUTPUT_MESSAGE) >= LEN_CAP:
+        OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+    else:
+        OUTPUT_MESSAGE = ''
+
+    LEN_CAP = 1900
+    while len(OUTPUT_MESSAGE) > 0:
+        part_num += 1
+
+        embedVar = discord.Embed(title="Generation Result (continued)", description='...'+OUTPUT_MESSAGE[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
+        print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+        await message.reply(embed=embedVar,
+                allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+        if len(OUTPUT_MESSAGE) >= LEN_CAP:
+            OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+        else:
+            break
+
 
 async def complete(in_text, message, length, temp, top_p, output_type="embed"):
     if in_text == '':
@@ -100,42 +131,10 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
         await message.add_reaction('✅')
 
-
-        LEN_CAP = max(1, 1900 - len(in_text))
-        print("LC:", LEN_CAP)
-        part_num = 1
-        parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
-
         if output_type == "raw":
             return raw_output_message
 
-        embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
-        embedVar.description += '\n***' + in_text + '*** ' + raw_output_message[:LEN_CAP] + '...'
-        embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
-        print("SENDING:", raw_output_message[:LEN_CAP])
-        await message.reply(embed=embedVar,
-                allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
-
-        if len(raw_output_message) >= LEN_CAP:
-            raw_output_message = raw_output_message[LEN_CAP:]
-        else:
-            raw_output_message = ''
-
-        LEN_CAP = 1900
-        while len(raw_output_message) > 0:
-            part_num += 1
-
-            embedVar = discord.Embed(title="Generation Result (continued)", description='', color=0x00ff00, timestamp=datetime.datetime.utcnow())
-            embedVar.description += '...' + raw_output_message[:LEN_CAP] + '...'
-            embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
-            print("SENDING:", raw_output_message[:LEN_CAP])
-            await message.reply(embed=embedVar,
-                    allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
-
-            if len(raw_output_message) >= LEN_CAP:
-                raw_output_message = raw_output_message[LEN_CAP:]
-            else:
-                break
+        model_info = "`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`"
 
         return "NO_OUTPUT"
         # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
