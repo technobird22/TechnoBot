@@ -48,7 +48,7 @@ async def adventure(message):
         return prompt
 
     history.append("[action] " + message.content + "\n")
-    result = await complete(prompt + '\n' + ''.join(history), message, length=128, temp=0.8, top_p=0.9, output_type="raw")
+    result = await complete(prompt + '\n' + ''.join(history), message, length=128, temp=0.9, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
         return "NO_OUTPUT"
