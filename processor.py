@@ -35,8 +35,13 @@ async def adventure(message):
         print("IGNORING: MANUAL IGNORE")
         return "NO_OUTPUT"
 
+    if message.content.startswith(".clearhistory"):
+        history = []
+        return "Successfully cleared history!"
+
     if message.content.startswith(".prompt "):
         prompt = str(message.content)[9:]
+        history = []
         return "Successfully set prompt!"
 
     if message.content == ".getprompt":
