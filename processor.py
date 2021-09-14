@@ -44,7 +44,7 @@ async def adventure(message):
         return prompt
 
     if message.content == ".geteverything":
-        await long_output(message, prompt + '\n---------------\n' + ''.join(history), "idk")
+        await long_output(message, prompt + '------------------------------\n' + ''.join(history), "idk")
         return "NO_OUTPUT"
 
     if not message.content.startswith(">"):
