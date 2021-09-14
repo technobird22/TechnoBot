@@ -174,12 +174,12 @@ def init_discord_bot():
                 return
             except KeyError:
                 pass
-                
 
-            if str(presets.BOT_ID) in message.content:
-                await message.channel.send("Hey there, the bot is currently in **non finetuned raw mode**. This means the bot should be more generic.\n\nPlease use the command `.raw` before your message to feed it into the bot")
-                await finish()
-                return
+
+            # if str(presets.BOT_ID) in message.content:
+            #     await message.channel.send("Hey there, the bot is currently in **non finetuned raw mode**. This means the bot should be more generic.\n\nPlease use the command `.raw` before your message to feed it into the bot")
+            #     await finish()
+            #     return
             
             if message.content[:10] == ".lcomplete" or message.content[:10] == ".lcontinue":
                 in_text = message.content[11:]
