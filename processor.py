@@ -31,10 +31,6 @@ async def adventure(message):
     bot_start = '[story]'
     human_start = '[action]'
 
-    if not message.content.startswith(">"):
-        print("IGNORING: MANUAL IGNORE")
-        return "NO_OUTPUT"
-
     if message.content.startswith(".clearhistory"):
         history = []
         return "Successfully cleared history!"
@@ -51,7 +47,11 @@ async def adventure(message):
         await long_output(message, prompt + '\n' + ''.join(history), "idk")
         return "NO_OUTPUT"
 
-    history.append("[action] " + message.content + "\n")
+    if not message.content.startswith(">"):
+        print("IGNORING: MANUAL IGNORE")
+        return "NO_OUTPUT"
+
+    history.append("[action] " + message.content[2:] + "\n")
     result = await complete(prompt + '\n' + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
