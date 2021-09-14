@@ -176,11 +176,6 @@ def init_discord_bot():
                 pass
 
 
-            # if str(presets.BOT_ID) in message.content:
-            #     await message.channel.send("Hey there, the bot is currently in **non finetuned raw mode**. This means the bot should be more generic.\n\nPlease use the command `.raw` before your message to feed it into the bot")
-            #     await finish()
-            #     return
-
             if message.content[:9] == ".complete" or message.content[:9] == ".continue":
                 in_text = message.content[10:]
 
