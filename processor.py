@@ -52,6 +52,8 @@ async def complete(in_text, message, length, temp, top_p):
         part_num = 1
         parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
 
+        if output_type == "raw":
+            return raw_output_message
 
         embedVar = discord.Embed(title="Generation Result", description="`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`", color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embedVar.description += '\n***' + in_text + '*** ' + raw_output_message[:LEN_CAP] + '...'
