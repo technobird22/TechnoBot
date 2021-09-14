@@ -44,7 +44,7 @@ async def adventure(message):
         return prompt
 
     if message.content == ".geteverything":
-        await long_output(message, prompt + '\n' + ''.join(history), "idk")
+        await long_output(message, prompt + '\n---------------\n' + ''.join(history), "idk")
         return "NO_OUTPUT"
 
     if not message.content.startswith(">"):
@@ -54,8 +54,7 @@ async def adventure(message):
     print("ADDING:       [action] " + message.content[2:] + "\n")
     result = await complete(prompt + ''.join(history) + "[action] " + message.content[2:] + "\n", message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
-    if result == "API_BUSY":
-        history.pop()
+    if result == "API_BUSY" or result == "WARNING: GENERAL ERROR":
         return "NO_OUTPUT"
 
     # Save to history
