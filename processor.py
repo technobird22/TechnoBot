@@ -31,7 +31,7 @@ async def adventure(message):
     bot_start = '[story]'
     human_start = '[action]'
 
-    if message.content.startswith(">"):
+    if not message.content.startswith(">"):
         print("IGNORING: MANUAL IGNORE")
         return "NO_OUTPUT"
 
@@ -55,6 +55,7 @@ async def adventure(message):
     result = await complete(prompt + '\n' + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
+        history.pop()
         return "NO_OUTPUT"
 
     try:
