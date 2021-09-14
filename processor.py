@@ -47,6 +47,10 @@ async def adventure(message):
     if message.content == ".getprompt":
         return prompt
 
+    if message.content == ".geteverything":
+        long_output(message, prompt + '\n' + ''.join(history), "idk")
+        return "NO_OUTPUT"
+
     history.append("[action] " + message.content + "\n")
     result = await complete(prompt + '\n' + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
