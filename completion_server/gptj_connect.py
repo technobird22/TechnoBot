@@ -2,7 +2,9 @@ import json
 import time
 import aiohttp
 
-last_qry = time.time() - 30 # Last query was over 30 seconds ago (hopefully)
+RATE_LIMIT_TIME = 20
+
+last_qry = time.time() - RATE_LIMIT_TIME # Last query was over RATE_LIMIT_TIME seconds ago (hopefully)
 
 url = 'https://api.eleuther.ai/completion'
 headers = {"Accept": "application/json","Content-Type": "application/json","User-Agent": "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36"}
@@ -31,7 +33,7 @@ async def run_prompt(query_input, length=128, temp=0.8, top_p=0.9):
                 return (await response.json())[0]['generated_text']
             elif response.status == 503:
                 print("You are being rate limited by the API! :/")
-                last_qry = time.time() # wait another 30 seconds
+                last_qry = time.time() # wait another RATE_LIMIT_TIME seconds
                 return "RATE_LIMITED"
             else:
                 print("Error accessing API!")
@@ -42,7 +44,7 @@ async def run_prompt(query_input, length=128, temp=0.8, top_p=0.9):
 async def query(qry, length, temp, top_p):
     global last_qry
 
-    rate_limit = (time.time() - last_qry) < 30 # bool whether it's currently rate limited
+    rate_limit = (time.time() - last_qry) < RATE_LIMIT_TIME # bool whether it's currently rate limited
     if rate_limit:
         print("Warning; Predicted rate limit.")
         return "BUSY"
@@ -54,7 +56,7 @@ async def query(qry, length, temp, top_p):
 
     elif result == "RATE_LIMITED":
         print("Warning! Reached API Rate limit!")
-        last_qry = time.time() # wait another 30 seconds
+        last_qry = time.time() # wait another RATE_LIMIT_TIME seconds
         return "BUSY"
     else:
         print("ERROR: ", result)
@@ -70,11 +72,11 @@ if __name__ == "__main__":
             if result not in errors:
                 print(result)
                 print("Waiting for rate limit to pass...")
-                time.sleep(30)
+                time.sleep(RATE_LIMIT_TIME)
             else:
                 print("ERROR: ", result)
                 if result == "RATE_LIMITED":
-                    time.sleep(30)
+                    time.sleep(RATE_LIMIT_TIME)
                 else:
                     time.sleep(1)
                     break
