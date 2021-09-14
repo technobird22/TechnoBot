@@ -36,7 +36,7 @@ async def adventure(message):
         return "Successfully cleared history!"
 
     if message.content.startswith(".prompt "):
-        prompt = str(message.content)[8:]
+        prompt = str(message.content)[8:] + '\n'
         history = []
         return "Successfully set prompt!"
 
@@ -52,7 +52,7 @@ async def adventure(message):
         return "NO_OUTPUT"
 
     history.append("[action] " + message.content[2:] + "\n")
-    result = await complete(prompt + '\n' + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
+    result = await complete(prompt + ''.join(history), message, length=256, temp=0.85, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
         history.pop()
@@ -125,7 +125,7 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
             busy_emote = random.choice(presets.BUSY_EMOTES)
             await message.add_reaction(busy_emote)
             reply = await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
-            await asyncio.sleep(30)
+            await asyncio.sleep(20)
             await message.clear_reaction(busy_emote)
             await message.add_reaction('🔁')
             await reply.delete()
