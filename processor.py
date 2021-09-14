@@ -40,8 +40,16 @@ async def complete(in_text, message, length, temp, top_p):
 
         if raw_output_message == "BUSY":
             print("API Rate limit")
-            await message.add_reaction(random.choice(presets.BUSY_EMOTES))
-            await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
+            busy_emote = random.choice(presets.BUSY_EMOTES)
+            await message.add_reaction(busy_emote)
+            reply = await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
+            await asyncio.sleep(30)
+            await message.clear_reaction(busy_emote)
+            await message.add_reaction('🔁')
+            await reply.delete()
+
+            if output_type == "raw":
+                return "API_BUSY"
             return "NO_OUTPUT"
 
         await message.add_reaction('✅')
