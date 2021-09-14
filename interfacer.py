@@ -13,23 +13,6 @@ import numpy as np
 import presets
 import processor
 
-def change_len(new_len):
-    global length
-    length = new_len
-    print("Successfully changed len")
-
-def change_temp(new_temp):
-    global temperature
-    temperature = new_temp
-    print("Successfully changed temp")
-
-def init_params():
-    global length, temperature, top_k, top_p
-    length = 128
-    temperature = 0.8
-    top_k = 40
-    top_p = 0.9
-
 async def react_image(url_in):
     '''Respond to a given image'''  
     params = {"url": url_in}
@@ -72,7 +55,6 @@ def exit_things():
 
 def initialise():
     print("Initialising interfaces...")
-    init_params()
 
 if __name__ == '__main__':
     print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")

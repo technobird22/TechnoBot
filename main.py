@@ -35,6 +35,11 @@ async def discord_announce(msg):
             continue
         await client.get_channel(cur_channel).send(msg)
 
+async def finish():
+    global client
+
+    await client.change_presence(activity=discord.Game(name='with AI | READY'))
+
 def init_discord_bot():
     global client, START_TIME, clean_start
 
@@ -53,7 +58,7 @@ def init_discord_bot():
 
         await asyncio.sleep(1)
 
-        await client.change_presence(activity=discord.Game(name='with AI | READY'))
+        await finish()
         await discord_announce('**Bot is** `READY`!')
         bot_start_msg = "**Initialised in " + elapsed_time +" seconds! Current Time: " \
         + str(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())) + " UTC**\nServers: ```diff\n" + joined_servers + "```"
@@ -100,16 +105,10 @@ def init_discord_bot():
             goose_id = str(random.randint(0, 1000)).zfill(4)
             print("Getting Goose... HONK!   ID:", goose_id)
             OUTPUT_MESSAGE = presets.get_goose(goose_id)
-        # if message.content.startswith(".complete"):
-        #     await start_typing(message)
-        #     print("\nGetting completion... ")
-        #     result = await interfacer.complete(message.content[10:])
-        #     print("RESULT:", result)
-        #     OUTPUT_MESSAGE = '*' + message.content[10:] + '*' + '`' + result[0] + '`'
 
         # Info
         elif message.content == ".about" or message.content == ".info" or message.content == ".help":
-            await start_typing(message)
+            # await start_typing(message)
             print("\nPrinting about... ")
             OUTPUT_MESSAGE = presets.about_message
             await asyncio.sleep(1)
@@ -124,7 +123,6 @@ def init_discord_bot():
 
             clean_start = 0
             await message.author.send(SPACER + '\n**' + random.choice(presets.GREETINGS) + ' ' + presets.OWNER_NAME + '!** :)' + "\nJust finished starting up " + random.choice(presets.START_EMOTES) + "\nHope you're doing well")
-            # await message.author.send(":fox:")
             await message.author.send(SMOL_SPACER + '\n' + bot_start_msg)
             await message.author.send(SPACER + "\n**__Error log:__** `Empty :)`" + '\n' + 
                 "**__Unfinished request queue:__** *(`0` pending)* `Nothing here! :)`")
@@ -162,59 +160,17 @@ def init_discord_bot():
                 client.change_presence(activity=discord.Game(name='with AI | STOPPING'))
                 await asyncio.sleep(5)
                 raise KeyboardInterrupt
-                exit()
-
-            elif command.startswith("len"):
-                print("changing output length")
-                try:
-                    intlen = int(command[4:])
-                    await message.channel.send('Changing output length to `' + command[4:] + '`!')
-                except:
-                    print("Invalid int")
-                    await message.channel.send('Hmm, was `' + command[4:] + '` a valid integer?')
-                interfacer.change_len(intlen)
-                await message.channel.send('Done! New settings now in place.')
-                
-                await asyncio.sleep(1)
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
-                return
-
-            elif command.startswith("temp"):
-                print("Changing temperature...")
-                try:
-                    intlen = float(command[5:])
-                    await message.channel.send('Changing temperature to `' + command[5:] + '`!')
-                except:
-                    print("Invalid float")
-                    await message.channel.send('Hmm, was `' + command[5:] + '` a valid float?')
-                interfacer.change_temp(intlen)
-                await message.channel.send('Done! New settings now in place.')
-
-                await asyncio.sleep(1)
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
-                return
 
             else:
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
+                await finish()
                 # OUTPUT_MESSAGE = "Error! Invalid command!\nPlease check your spelling and try again!"
                 return
 
         # Reply to a message
         else:
-            # if(random.randint(1, 25) != 1:
-            #     print("Ignoring... (randomiser: compulsory decline)")
-            #     return
-            # else:
-            #     print("Replying! (randomiser: selected)")
-
-            # if(str(message.guild) in presets.IGNORED_GUILDS and str(message.channel)[1:]=="bots"):
-            #     await message.channel.send("Hey " + str(message.author) + ",\nTo avoid backlog, please use the Technoware server:\nhttps://discord.gg/QDc9KYy\nThanks for your understanding")
-            #     await client.change_presence(activity=discord.Game(name='with AI | READY'))
-            #     return
-
             try:
                 await message.channel.send(presets.PRESET_RESPONSES[str(message.content)])
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
+                await finish()
                 return
             except KeyError:
                 pass
@@ -222,7 +178,7 @@ def init_discord_bot():
 
             if str(presets.BOT_ID) in message.content:
                 await message.channel.send("Hey there, the bot is currently in **non finetuned raw mode**. This means the bot should be more generic.\n\nPlease use the command `.raw` before your message to feed it into the bot")
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
+                await finish()
                 return
             
             if message.content[:10] == ".lcomplete" or message.content[:10] == ".lcontinue":
@@ -237,11 +193,11 @@ def init_discord_bot():
                 OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
             else:
-                await client.change_presence(activity=discord.Game(name='with AI | READY'))
+                await finish()
                 return
 
         if OUTPUT_MESSAGE == "NO_OUTPUT":
-            await client.change_presence(activity=discord.Game(name='with AI | READY'))
+            await finish()
             return
 
         LEN_CAP = 1950
@@ -257,7 +213,7 @@ def init_discord_bot():
         await message.reply(OUTPUT_MESSAGE[:LEN_CAP],
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
         print("BOT Response: '" + OUTPUT_MESSAGE + "'. Responded in " + elapsed_time + " seconds.")
-        await client.change_presence(activity=discord.Game(name='with AI | READY'))
+        await finish()
 
 def start_all():
     '''Start everything to run model'''
