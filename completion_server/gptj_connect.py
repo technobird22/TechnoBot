@@ -2,7 +2,7 @@ import json
 import time
 import aiohttp
 
-RATE_LIMIT_TIME = 20
+RATE_LIMIT_TIME = 10
 
 last_qry = time.time() - RATE_LIMIT_TIME # Last query was over RATE_LIMIT_TIME seconds ago (hopefully)
 
@@ -56,6 +56,9 @@ async def query(qry, length, temp, top_p):
 
     elif result == "RATE_LIMITED":
         print("Warning! Reached API Rate limit!")
+        print("!!!!! ACTUAL RATE LIMIT !!!!!")
+        print("!!!!! ACTUAL RATE LIMIT !!!!!")
+        print("!!!!! ACTUAL RATE LIMIT !!!!!")
         last_qry = time.time() # wait another RATE_LIMIT_TIME seconds
         return "BUSY"
     else:
