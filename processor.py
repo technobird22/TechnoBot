@@ -70,7 +70,7 @@ async def adventure(message):
         return "NO_OUTPUT"
 
     # Save to history
-    history.append("[action] " + message.content[2:] + "\n")
+    history.append(human_start + ' ' + message.content[2:] + "\n")
 
     try:
         start_index = result.find(bot_start)+len(bot_start)+1
