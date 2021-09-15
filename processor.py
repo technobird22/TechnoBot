@@ -41,11 +41,11 @@ async def adventure(message):
         history = []
         return "Successfully set prompt!"
 
-    if message.content.startswith("temp"):
+    if message.content.startswith(".temp"):
         print("Changing temperature...")
         try:
             await message.channel.send('Changing temperature to `' + message.content[5:] + '`!')
-            bot_temp = float(message.content[5:])
+            bot_temp = float(message.content[6:])
             await message.channel.send('Done! New settings now in place.')
         except:
             print("Invalid float")
@@ -60,7 +60,7 @@ async def adventure(message):
         return "NO_OUTPUT"
 
     if not message.content.startswith(">"):
-        print("IGNORING: MANUAL IGNORE")
+        print("IGNORING: IGNORE NON PROMPT")
         return "NO_OUTPUT"
 
     print("ADDING:" + human_start + ' ' + message.content[2:] + "\n")
