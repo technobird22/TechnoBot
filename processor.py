@@ -28,9 +28,9 @@ async def is_url_img(url):
             return response.headers["content-type"].startswith('image/')
 
 async def adventure(message):
-    global history, prompt
-    bot_start = '[story]'
-    human_start = '[action]'
+    global history, prompt, bot_temp
+    bot_start = '[dm]'
+    human_start = '[player]'
 
     if message.content.startswith(".clearhistory"):
         history = []
