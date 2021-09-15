@@ -14,6 +14,7 @@ import presets
 
 history = []
 prompt = presets.ADVENTURE_PROMPT
+bot_temp = 0.9
 
 def get_urls(in_text):
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -35,10 +36,21 @@ async def adventure(message):
         history = []
         return "Successfully cleared history!"
 
-    if message.content.startswith(".prompt "):
-        prompt = str(message.content)[8:] + '\n'
+    if message.content.startswith(".setprompt "):
+        prompt = str(message.content)[11:] + '\n'
         history = []
         return "Successfully set prompt!"
+
+    if message.content.startswith("temp"):
+        print("Changing temperature...")
+        try:
+            await message.channel.send('Changing temperature to `' + message.content[5:] + '`!')
+            bot_temp = float(message.content[5:])
+            await message.channel.send('Done! New settings now in place.')
+        except:
+            print("Invalid float")
+            await message.channel.send('Hmm, was `' + message.content[5:] + '` a valid float?')
+        return
 
     if message.content == ".getprompt":
         return prompt
