@@ -16,6 +16,19 @@ history = []
 prompt = presets.ADVENTURE_PROMPT
 bot_temp = 0.9
 
+async def list_saves(message):
+    data = json.load(open('adventure_presets.json'))
+
+    embedVar = discord.Embed(title="Saves/Presets", description='To load a save, run `.load [NAME OF SAVE]`\nTo create a save of the current message history, run `.save [SAVE_NAME]`!', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+    preset_names = str(''.join([('- "'+cur+'"\n') for cur in data['presets'].keys()]))
+    save_names = str(''.join([('- "'+cur+'"\n') for cur in data['saves'].keys()]))
+    print(preset_names)
+    print(save_names)
+    embedVar.add_field(name="Presets", value=preset_names, inline=False)
+    if len(save_names) != 0:
+        embedVar.add_field(name="User saves", value=save_names, inline=False)
+    await message.reply(embed=embedVar)
+
 def load(preset_name):
     data = json.load(open('adventure_presets.json'))
 
@@ -66,10 +79,14 @@ async def adventure(message):
     if message.content.startswith(".load"):
         data = load(str(message.content)[6:])
         if data == "NOT_FOUND":
-            return "Error: Save not found! :/"
+            return "Save not found! :/\nTo view available saves, use `.listsaves` to view available saves"
         prompt = data
         history = []
         return "Successfully loaded the prompt!\nYou can check it with `.getprompt` :)"
+
+    if message.content == ".listsaves":
+        await list_saves(message)
+        return "NO_OUTPUT"
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
