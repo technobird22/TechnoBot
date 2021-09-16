@@ -49,7 +49,7 @@ async def adventure(message):
             await message.channel.send('Done! New settings now in place.')
         except:
             print("Invalid float")
-            await message.channel.send('Hmm, was `' + message.content[5:] + '` a valid float?')
+            await message.channel.send('Hmm, was `' + message.content[6:] + '` a valid float?')
         return
 
     if message.content == ".help":
