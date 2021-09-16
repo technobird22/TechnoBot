@@ -52,6 +52,9 @@ async def adventure(message):
             await message.channel.send('Hmm, was `' + message.content[5:] + '` a valid float?')
         return
 
+    if message.content == ".help":
+        return presets.ADVENTURE_HELP
+
     if message.content == ".getprompt":
         return prompt
 

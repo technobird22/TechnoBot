@@ -107,7 +107,7 @@ def init_discord_bot():
             OUTPUT_MESSAGE = presets.get_goose(goose_id)
 
         # Info
-        elif message.content == ".about" or message.content == ".info" or message.content == ".help":
+        elif message.content == ".about" or message.content == ".info":
             # await start_typing(message)
             print("\nPrinting about... ")
             OUTPUT_MESSAGE = presets.about_message
