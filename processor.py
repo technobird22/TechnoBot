@@ -44,7 +44,7 @@ async def adventure(message):
     if message.content.startswith(".temp"):
         print("Changing temperature...")
         try:
-            await message.channel.send('Changing temperature to `' + message.content[5:] + '`!')
+            await message.channel.send('Changing temperature to `' + message.content[6:] + '`!')
             bot_temp = float(message.content[6:])
             await message.channel.send('Done! New settings now in place.')
         except:
