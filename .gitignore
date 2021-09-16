@@ -10,6 +10,9 @@ queue.txt
 test.py
 emote_react_server/emojis.json
 
+adventure_presets.json
+adventure_logs.json
+
 # Directories
 temp/
 emote_react_server/data/

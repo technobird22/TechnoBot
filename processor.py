@@ -1,7 +1,7 @@
 '''Takes inputs and parses and queues them to interface with the API'''
 import asyncio
+import json
 import re
-import requests
 import aiohttp
 import random
 import math
@@ -15,6 +15,25 @@ import presets
 history = []
 prompt = presets.ADVENTURE_PROMPT
 bot_temp = 0.9
+
+def load(preset_name):
+    data = json.load(open('adventure_presets.json'))
+
+    print("Loading preset:", preset_name)
+
+    try:
+        result = data['presets'][preset_name]
+        return result
+    except KeyError:
+        print("Not a preset...")
+
+    try:
+        result = data['saves'][preset_name]
+        return result
+    except KeyError:
+        print("Not a save...")
+        return "NOT_FOUND"
+
 
 def get_urls(in_text):
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -43,6 +62,14 @@ async def adventure(message):
         prompt = str(message.content)[11:] + '\n'
         history = []
         return "Successfully set prompt!"
+
+    if message.content.startswith(".load"):
+        data = load(str(message.content)[6:])
+        if data == "NOT_FOUND":
+            return "Error: Save not found! :/"
+        prompt = data
+        history = []
+        return "Successfully loaded the prompt!\nYou can check it with `.getprompt` :)"
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
