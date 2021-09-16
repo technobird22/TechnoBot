@@ -36,7 +36,7 @@ async def adventure(message):
         history = []
         return "Successfully cleared history!"
 
-    if message.content.startswith(".setprompt "):
+    if message.content.startswith(".setprompt"):
         prompt = str(message.content)[11:] + '\n'
         history = []
         return "Successfully set prompt!"
