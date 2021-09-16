@@ -47,6 +47,20 @@ def load(preset_name):
         print("Not a save...")
         return "NOT_FOUND"
 
+def save(savename):
+    data = json.load(open('adventure_presets.json'))
+    print("Saving as:", savename)
+
+    if savename in data["presets"] or savename in data["saves"]:
+        print("Already taken!")
+        return "TAKEN"
+    else:
+        print("Adding to dict...")
+        data["saves"][savename] = prompt + ''.join(history)
+        print("Writing to savefile...")
+        json.dump(data, open('adventure_presets.json', 'w'))
+        print("Done")
+        return "OK"
 
 def get_urls(in_text):
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -84,9 +98,17 @@ async def adventure(message):
         history = []
         return "Successfully loaded the prompt!\nYou can check it with `.getprompt` :)"
 
-    if message.content == ".listsaves":
+    if message.content == ".listsaves" or message.content == ".saves":
         await list_saves(message)
         return "NO_OUTPUT"
+
+    if message.content.startswith(".save"):
+        savename = str(message.content)[6:]
+
+        result = save(savename)
+        if result == "TAKEN":
+            return "The name '"+savename+"' has been used already!\nPlease try saving it under a different name."
+        return "Successfully saved current context under"+savename+"!\nBtw, you can continue using the current context; nothing in history has been modified :)"
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
