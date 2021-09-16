@@ -36,6 +36,9 @@ async def adventure(message):
         history = []
         return "Successfully cleared history!"
 
+    if message.content.startswith(".continue"):
+        return "btw, continue commands don't work here. Try using another channel that isn't in adventure mode"
+
     if message.content.startswith(".setprompt"):
         prompt = str(message.content)[11:] + '\n'
         history = []
