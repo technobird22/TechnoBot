@@ -121,8 +121,11 @@ async def adventure(message):
     print("ADDING:" + human_start + ' ' + message.content[2:] + "\r\n")
     result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\r\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
 
-    if result == "API_BUSY" or result == "WARNING: GENERAL ERROR":
+    if result == "API_BUSY":
         return "NO_OUTPUT"
+    
+    if result == "WARNING: GENERAL ERROR":
+        return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
 
     # Save to history
     history.append(human_start + ' ' + message.content[2:] + "\r\n")
