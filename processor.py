@@ -108,7 +108,7 @@ async def adventure(message):
         result = save(savename)
         if result == "TAKEN":
             return "The name '"+savename+"' has been used already!\nPlease try saving it under a different name."
-        return "Successfully saved current context under"+savename+"!\nBtw, you can continue using the current context; nothing in history has been modified :)"
+        return "Successfully saved current context under '"+savename+"'!\nBtw, you can continue using the current context; nothing in history has been modified :)"
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
@@ -154,9 +154,14 @@ async def adventure(message):
 
     try:
         start_index = 0
+        print('-'*30)
+        print("Raw Output:", result)
         print("start_index:", start_index)
+        print('-'*30)
         print("Truncated (start):", result[:start_index])
         parsed_output = result[start_index:]
+
+        print('-'*30)
         print("Truncated (end):", result[parsed_output.find(human_start)-2:])
         parsed_output = parsed_output[:parsed_output.find(human_start)-2]
         # parsed_output = parsed_output.replace(bot_start + ' ', '')
