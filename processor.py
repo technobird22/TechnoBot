@@ -56,10 +56,15 @@ async def adventure(message):
         return presets.ADVENTURE_HELP
 
     if message.content == ".getprompt":
-        return prompt
+        await raw_long_output(message, prompt)
+        return "NO_OUTPUT"
 
     if message.content == ".geteverything":
         await long_output(message, prompt + '------------------------------\n' + ''.join(history), "idk")
+        return "NO_OUTPUT"
+
+    if message.content == ".getdata":
+        await raw_long_output(message, '.setprompt ' + prompt + ''.join(history))
         return "NO_OUTPUT"
 
     if not message.content.startswith(">"):
