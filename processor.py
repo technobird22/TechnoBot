@@ -126,6 +126,35 @@ async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
         else:
             break
 
+async def raw_long_output(message, OUTPUT_MESSAGE):
+    LEN_CAP = max(1, 1900)
+    print("LC:", LEN_CAP)
+    part_num = 1
+
+    embedVar = discord.Embed(title="Savefile", description='```md\n'+OUTPUT_MESSAGE[:LEN_CAP]+'```', color=0xff0000, timestamp=datetime.datetime.utcnow(), )
+    print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+    await message.reply(embed=embedVar,
+            allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+    if len(OUTPUT_MESSAGE) >= LEN_CAP:
+        OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+    else:
+        OUTPUT_MESSAGE = ''
+
+    LEN_CAP = 1900
+    while len(OUTPUT_MESSAGE) > 0:
+        part_num += 1
+
+        embedVar = discord.Embed(title="Savefile (continued)", description='```'+OUTPUT_MESSAGE[:LEN_CAP]+'```', color=0xff0000, timestamp=datetime.datetime.utcnow())
+        print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+        await message.reply(embed=embedVar,
+                allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+
+        if len(OUTPUT_MESSAGE) >= LEN_CAP:
+            OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+        else:
+            break
+
 
 async def complete(in_text, message, length, temp, top_p, output_type="embed"):
     if in_text == '':
