@@ -162,12 +162,14 @@ async def adventure(message):
         parsed_output = result[start_index:]
 
         print('-'*30)
-        print("Truncated (end):", result[parsed_output.find(human_start)-2:])
-        parsed_output = parsed_output[:parsed_output.find(human_start)-2]
+        print("Truncated (end):", result[parsed_output.find(human_start)-1:])
+        parsed_output = parsed_output[:parsed_output.find(human_start)-1]
         # parsed_output = parsed_output.replace(bot_start + ' ', '')
+        print('-'*30)
         print("Parsed output:", parsed_output)
+        print('-'*30)
     except:
-        return "huh."
+        return "huh. model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
 
     history.append(' ' + parsed_output + "\r\n")
     return parsed_output
