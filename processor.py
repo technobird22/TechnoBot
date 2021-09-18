@@ -132,7 +132,7 @@ async def adventure(message):
         await long_output(message, prompt + '------------------------------\n' + ''.join(history), "idk")
         return "NO_OUTPUT"
 
-    if message.content == ".getdata":
+    if message.content == ".getdata" or message.content == ".getsave":
         await raw_long_output(message, '.setprompt ' + prompt + ''.join(history))
         return "NO_OUTPUT"
 
