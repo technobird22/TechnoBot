@@ -140,8 +140,8 @@ async def adventure(message):
         print("IGNORING: IGNORE NON PROMPT")
         return "NO_OUTPUT"
 
-    print("ADDING:" + human_start + ' ' + message.content[2:] + "\r\n")
-    result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\r\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+    print("ADDING:" + human_start + ' ' + message.content[2:] + "\n")
+    result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
 
     if result == "API_BUSY":
         return "NO_OUTPUT"
@@ -150,7 +150,7 @@ async def adventure(message):
         return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
 
     # Save to history
-    history.append(human_start + ' ' + message.content[2:] + "\r\n")
+    history.append(human_start + ' ' + message.content[2:] + "\n")
 
     try:
         start_index = 0
@@ -171,7 +171,7 @@ async def adventure(message):
     except:
         return "huh. model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
 
-    history.append(' ' + parsed_output + "\r\n")
+    history.append(' ' + parsed_output + "\n")
     return parsed_output
 
 async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
