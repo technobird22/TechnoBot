@@ -22,11 +22,14 @@ async def list_saves(message):
     embedVar = discord.Embed(title="Saves/Presets", description='To load a save, run `.load [NAME OF SAVE]`\nTo create a save of the current message history, run `.save [SAVE_NAME]`!', color=0x00ff00, timestamp=datetime.datetime.utcnow())
     preset_names = str(''.join([('- "'+cur+'"\n') for cur in data['presets'].keys()]))
     save_names = str(''.join([('- "'+cur+'"\n') for cur in data['saves'].keys()]))
+    legacy_names = str(''.join([('- "'+cur+'"\n') for cur in data['legacy_saves'].keys()]))
     print(preset_names)
     print(save_names)
     embedVar.add_field(name="Presets", value=preset_names, inline=False)
     if len(save_names) != 0:
         embedVar.add_field(name="User saves", value=save_names, inline=False)
+    if len(legacy_names) != 0:
+        embedVar.add_field(name="Legacy saves", value=legacy_names, inline=False)
     await message.reply(embed=embedVar)
 
 def load(preset_name):
@@ -44,7 +47,13 @@ def load(preset_name):
         result = data['saves'][preset_name]
         return result
     except KeyError:
-        print("Not a save...")
+        print("Not a save..")
+
+    try:
+        result = data['legacy_saves'][preset_name]
+        return result
+    except KeyError:
+        print("Not a legacy save...")
         return "NOT_FOUND"
 
 def save(savename):
