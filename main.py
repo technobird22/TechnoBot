@@ -1,5 +1,4 @@
-# By Albert (Technobird22) for non profit. The model code is not mine
-'''Respond to given model prompts'''
+'''Main file'''
 
 from inspect import indentsize
 import os
