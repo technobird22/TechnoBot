@@ -94,6 +94,9 @@ async def adventure(message):
     if message.content.startswith(".continue"):
         return "btw, continue commands don't work here. Try using another channel that isn't in adventure mode"
 
+    if message.content == ".save":
+        return "To create a save, please give a name under which the save will be created\nEg. `.save this is the name of the save`"
+
     if message.content.startswith(".setprompt"):
         prompt = str(message.content)[11:] + '\n'
         history = []
@@ -111,7 +114,7 @@ async def adventure(message):
         await list_saves(message)
         return "NO_OUTPUT"
 
-    if message.content.startswith(".save"):
+    if message.content.startswith(".save "):
         savename = str(message.content)[6:]
 
         result = save(savename)
