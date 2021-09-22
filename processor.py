@@ -158,7 +158,7 @@ async def adventure(message):
         result = result.strip()
         if len(result) > 1 and result[0] != human_start:
             break
-        message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
+        await message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
         time.sleep(30)
         bot_temp += 0.1
     else:
