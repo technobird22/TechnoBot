@@ -95,7 +95,7 @@ async def adventure(message):
         return "btw, continue commands don't work here. Try using another channel that isn't in adventure mode"
 
     if message.content == ".save":
-        return "To create a save, please give a name under which the save will be created\nEg. `.save sthis is the name of the save`"
+        return "To create a save, please give a name under which the save will be created\nEg. `.save [NAME OF SAVE]`"
 
     if message.content == ".load":
         return "To load a save, please give the name of the save\nEg. `.load [savename]`"
