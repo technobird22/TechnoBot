@@ -156,7 +156,9 @@ async def adventure(message):
     for attempt in range(5):
         result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
         result = result.strip()
-        if len(result) > 1 and result[0] != human_start:
+        if len(result)_== 0:
+            return "EMPTY_OUTPUT"
+        if result[0] != human_start:
             break
 
     if result == "API_BUSY":
