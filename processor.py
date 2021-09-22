@@ -153,8 +153,10 @@ async def adventure(message):
         return "btw, if you're doing an action for adventure mode, you'll have to have a `SPACE` (' ') between the `>` and the start of your action!"
 
     print("ADDING:" + human_start + ' ' + message.content[2:] + "\n")
-    result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
-
+    while True:
+        result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+        if result.strip()[0] != human_start:
+            break
     if result == "API_BUSY":
         return "NO_OUTPUT"
     
