@@ -165,6 +165,11 @@ async def adventure(message):
     for attempt in range(3):
         result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
         result = result.strip()
+        if result and result[-1] != '.' and '.' in result:
+            result = result[:result.rfind('.')+1]
+        if result == "WARNING: GENERAL ERROR":
+            history = history[1:]
+            continue
         if len(result) > 1 and result[0] != human_start:
             break
         await message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
