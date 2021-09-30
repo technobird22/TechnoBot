@@ -159,7 +159,7 @@ async def adventure(message):
         return "NO_OUTPUT"
 
     if message.content[1] != ' ':
-        return "btw, if you're doing an action for adventure mode, you'll have to have a `SPACE` (' ') between the `>` and the start of your action!"
+        return "btw, if you're doing an action for adventure mode, please add a `SPACE` (' ') between the `>` and the start of your action!"
 
     print("ADDING:" + human_start + ' ' + message.content[2:] + "\n")
     for attempt in range(3):
