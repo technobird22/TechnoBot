@@ -165,8 +165,6 @@ async def adventure(message):
     for attempt in range(3):
         result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
         result = result.strip()
-        if result and result[-1] != '.' and '.' in result:
-            result = result[:result.rfind('.')+1]
         if result == "WARNING: GENERAL ERROR":
             history = history[1:]
             continue
@@ -181,8 +179,8 @@ async def adventure(message):
     if result == "API_BUSY":
         return "NO_OUTPUT"
     
-    if result == "WARNING: GENERAL ERROR":
-        return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
+    # if result == "WARNING: GENERAL ERROR":
+    #     return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
 
     # Save to history
     history.append(human_start + ' ' + message.content[2:] + "\n")
@@ -197,8 +195,11 @@ async def adventure(message):
         parsed_output = result[start_index:]
 
         print('-'*30)
-        print("Truncated (end):", result[parsed_output.find(human_start)-1:])
-        parsed_output = parsed_output[:parsed_output.find(human_start)-1]
+        # print("Truncated (end):", result[parsed_output.find(human_start)-1:])
+        if human_start in result:
+            parsed_output = parsed_output[:parsed_output.find(human_start)-1]
+        elif result[-1] != '.' and '.' in result:
+            parsed_output = result[:result.rfind('.')+1]
         # parsed_output = parsed_output.replace(bot_start + ' ', '')
         print('-'*30)
         print("Parsed output:", parsed_output)
