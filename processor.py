@@ -167,8 +167,8 @@ async def adventure(message):
         result = result.strip()
         if len(result) > 1 and result[0] != human_start:
             break
-        await message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
-        await asyncio.sleep(20)
+        # await message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
+        # await asyncio.sleep(20)
         bot_temp += 0.1
     else:
         return "Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?"
