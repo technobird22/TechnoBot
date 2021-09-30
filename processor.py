@@ -171,7 +171,7 @@ async def adventure(message):
         # await asyncio.sleep(20)
         bot_temp += 0.1
     else:
-        return "Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?"
+        return "Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?\n\nHere's what the model is returning:\n```" + result + "```. It should be returning something like this:\n```Foo\n> Bar\nBaz```"
 
     if result == "API_BUSY":
         return "NO_OUTPUT"
