@@ -91,7 +91,7 @@ async def adventure(message):
         history = []
         return "Successfully cleared history!"
 
-    if message.content.startswith(".continue"):
+    if message.content.startswith(".continue") or message.content.startswith(".complete"):
         return "btw, continue commands don't work here. Try using another channel that isn't in adventure mode"
 
     if message.content == ".save":
