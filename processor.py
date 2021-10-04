@@ -103,6 +103,24 @@ async def adventure(message):
     if message.content == ".temp":
         return "The current temperature for adventure mode is " + str(bot_temp) + "\nYou can set a new temp with `.temp [NEW TEMP]`"
 
+    if message.content == ".trim":
+        print('-'*20)
+        print("Trimmed off:", history[:8])
+        print('-'*50)
+        print("Keeping:", history[8:])
+        print('-'*50)
+        history = history[8:]
+        return "Trimmed off 4 messages!"
+
+    if message.content == ".delete" or message.content == ".undo":
+        print('-'*20)
+        print("Deleting last messages from history:", history[-2:])
+        print('-'*50)
+        print("Keeping:", history[:-2])
+        print('-'*50)
+        history = history[:-2]
+        return "Undid the last action!"
+
     if message.content.startswith(".setprompt"):
         prompt = str(message.content)[11:] + '\n'
         history = []
