@@ -110,7 +110,7 @@ async def adventure(message):
         print("Keeping:", history[8:])
         print('-'*50)
         history = history[8:]
-        return "Trimmed off 4 messages!"
+        return "Trimmed off the first `4` messages from history!"
 
     if message.content == ".delete" or message.content == ".undo":
         print('-'*20)
@@ -144,7 +144,7 @@ async def adventure(message):
         result = save(savename)
         if result == "TAKEN":
             return "The name '"+savename+"' has been used already!\nPlease try saving it under a different name."
-        return "Successfully saved current context under '"+savename+"'!\nBtw, you can continue using the current context; nothing in history has been modified :)"
+        return "Successfully saved current context under '"+savename+"'!"
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
