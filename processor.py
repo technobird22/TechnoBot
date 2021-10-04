@@ -153,7 +153,7 @@ async def adventure(message):
         except:
             print("Invalid float")
             await message.channel.send('Hmm, was `' + message.content[6:] + '` a valid float?')
-        return
+        return "NO_OUTPUT"
 
     if message.content == ".help":
         return presets.ADVENTURE_HELP
