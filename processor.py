@@ -170,6 +170,18 @@ async def adventure(message):
         await raw_long_output(message, '.setprompt ' + prompt + ''.join(history))
         return "NO_OUTPUT"
 
+    if message.content == "$":
+        await message.channel.send('Continuing previous message...')
+        return await adventure_action('', message)
+
+    if message.content.startswith("$"):
+        if message.content[1] != ' ':
+            return "Please add a `SPACE` (' ') between the `>` and the start of your adventure inject!"
+
+        history[-1] = history[-1][:-1] + ' ' + message.content[2:] + '\n'
+        await message.channel.send('Injected action. Continuing from action...')
+        return await adventure_action('', message)
+
     if not message.content.startswith(">"):
         print("IGNORING: IGNORE NON PROMPT")
         return "NO_OUTPUT"
@@ -187,9 +199,19 @@ async def adventure_action(action, message):
     # bot_start = ''
     human_start = '>'
 
-    print("ADDING:" + human_start + ' ' + action[2:] + "\n")
+    is_completion = action == ''
+    if is_completion:
+        print("Continuing previous messages...")
+        history[-1] = history[-1][:-1] # Cut off newline so model will complete last output
+    else:
+        print("Generating adventure step for prompt:" + human_start + ' ' + action[2:] + "\n")
+
     for attempt in range(1):
-        result = await complete(prompt + ''.join(history) + human_start + ' ' + action[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+        if is_completion:
+            result = await complete(prompt + ''.join(history), message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+        else:
+            result = await complete(prompt + ''.join(history) + human_start + ' ' + action[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+
         result = result.strip()
         if result == "WARNING: GENERAL ERROR":
             history = history[1:]
@@ -209,7 +231,8 @@ async def adventure_action(action, message):
     #     return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
 
     # Save to history
-    history.append(human_start + ' ' + action[2:] + "\n")
+    if not is_completion:
+        history.append(human_start + ' ' + action[2:] + "\n")
 
     try:
         start_index = 0
@@ -233,7 +256,11 @@ async def adventure_action(action, message):
     except:
         return "huh. model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
 
-    history.append(' ' + parsed_output + "\n")
+    if is_completion:
+        history[-1] += ' ' + parsed_output + "\n"
+    else:
+        history.append(' ' + parsed_output + "\n")
+
     return parsed_output
 
 
