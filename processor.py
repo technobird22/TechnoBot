@@ -122,7 +122,7 @@ async def adventure(message):
         return "Undid the last action!"
 
     if message.content.startswith(".setprompt"):
-        prompt = str(message.content)[11:] + '\n'
+        prompt = str(message.content)[11:] + '\n\n'
         history = []
         return "Successfully set prompt!"
 
