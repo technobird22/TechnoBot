@@ -156,8 +156,9 @@ def init_discord_bot():
                 print('='*30, "DUMP OF CURRENT HISTORY: ", '='*30, '\n' + history)
                 
                 discord_announce('**Bot is** `STOPPING`!')
-                client.change_presence(activity=discord.Game(name='with AI | STOPPING'))
-                await asyncio.sleep(5)
+                await message.channel.send('**Bot is** `STOPPING`!')
+                await client.change_presence(activity=discord.Game(name='with AI | STOPPING'))
+                await asyncio.sleep(2)
                 raise KeyboardInterrupt
 
             else:
