@@ -84,8 +84,6 @@ async def is_url_img(url):
 
 async def adventure(message):
     global history, prompt, bot_temp
-    # bot_start = ''
-    human_start = '>'
 
     if message.content.startswith(".clearhistory"):
         history = []
@@ -179,9 +177,19 @@ async def adventure(message):
     if message.content[1] != ' ':
         return "btw, if you're doing an action for adventure mode, please add a `SPACE` (' ') between the `>` and the start of your action!"
 
-    print("ADDING:" + human_start + ' ' + message.content[2:] + "\n")
+
+    return await adventure_action(message.content, message)
+
+
+async def adventure_action(action, message):
+    global history, prompt, bot_temp
+    
+    # bot_start = ''
+    human_start = '>'
+
+    print("ADDING:" + human_start + ' ' + action[2:] + "\n")
     for attempt in range(1):
-        result = await complete(prompt + ''.join(history) + human_start + ' ' + message.content[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+        result = await complete(prompt + ''.join(history) + human_start + ' ' + action[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
         result = result.strip()
         if result == "WARNING: GENERAL ERROR":
             history = history[1:]
@@ -201,7 +209,7 @@ async def adventure(message):
     #     return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
 
     # Save to history
-    history.append(human_start + ' ' + message.content[2:] + "\n")
+    history.append(human_start + ' ' + action[2:] + "\n")
 
     try:
         start_index = 0
@@ -227,6 +235,7 @@ async def adventure(message):
 
     history.append(' ' + parsed_output + "\n")
     return parsed_output
+
 
 async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
     LEN_CAP = max(1, 1900)
