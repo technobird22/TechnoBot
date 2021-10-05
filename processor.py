@@ -232,7 +232,7 @@ async def adventure_action(action, message):
 
     # Save to history
     if not is_completion:
-        history.append(human_start + action[2:] + "\n")
+        history.append(human_start + ' ' + action[2:] + "\n")
 
     try:
         start_index = 0
@@ -259,7 +259,7 @@ async def adventure_action(action, message):
     if is_completion:
         history[-1] += ' ' + parsed_output + "\n"
     else:
-        history.append(parsed_output + "\n")
+        history.append(' ' + parsed_output + "\n")
 
     return parsed_output
 
