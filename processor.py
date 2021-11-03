@@ -132,6 +132,13 @@ async def adventure(message):
         history = []
         return "Successfully loaded the prompt!\nYou can check it with `.getprompt` :)"
 
+    if message.content.startswith(".peek"):
+        data = load(str(message.content)[6:])
+        if data == "NOT_FOUND":
+            return "Save not found! :/\nTo view available saves, use `.listsaves` to view available saves"
+        await raw_long_output(message, data)
+        return "NO_OUTPUT"
+
     if message.content == ".listsaves" or message.content == ".saves":
         await list_saves(message)
         return "NO_OUTPUT"
@@ -202,7 +209,7 @@ async def adventure_action(action, message):
     is_completion = action == ''
     if is_completion:
         print("Continuing previous messages...")
-        history[-1] = history[-1][:-1] # Cut off newline so model will complete last output
+        history[-1] = history[-1].rstrip() # Cut off newline so model will complete last output
     else:
         print("Generating adventure step for prompt:" + human_start + ' ' + action[2:] + "\n")
 
@@ -220,7 +227,7 @@ async def adventure_action(action, message):
             break
         # await message.reply("Hmm... The model's responses aren't being parsed correctly...\nHold on, I'll give it another try")
         # await asyncio.sleep(20)
-        bot_temp += 0.1
+        # bot_temp += 0.1
     else:
         return "Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?\n\nHere's what the model is returning:\n```" + result + "```. It should be returning something like this:\n```Foo\n> Bar\nBaz```"
 
