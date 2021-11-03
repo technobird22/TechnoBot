@@ -15,6 +15,8 @@ import presets
 import interfacer
 import processor
 
+import custom_commands
+
 async def start_typing(message):
     global client
 
@@ -186,6 +188,8 @@ def init_discord_bot():
                 OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
             else:
+                await custom_commands.receive_message(message)
+
                 await finish()
                 return
 

@@ -10,6 +10,8 @@ queue.txt
 test.py
 emote_react_server/emojis.json
 
+custom_commands.py
+
 adventure_presets.json
 adventure_logs.json
 
