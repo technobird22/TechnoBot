@@ -14,7 +14,7 @@ import presets
 
 history = []
 prompt = presets.ADVENTURE_PROMPT
-bot_temp = 1.7
+bot_temp = 0.7
 
 async def list_saves(message):
     data = json.load(open('adventure_presets.json'))
