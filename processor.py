@@ -399,8 +399,9 @@ async def react_image(message, attachment):
             print("---\nThresholds not met, so NOT reacting with: ", end='')
             print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
             if cur_reaction[2] == orig_acc:
-                await message.add_reaction('❓')
+                # await message.add_reaction('❓')
                 # await message.add_reaction('❔')
+                pass
             break
         else:
             print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
