@@ -408,7 +408,10 @@ async def react_image(message, attachment):
         else:
             print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
             past_acc = cur_reaction[2]
-            await message.add_reaction(cur_reaction[1])
+            try:
+                await message.add_reaction(cur_reaction[1])
+            except:
+                print("Reaction failed:", cur_reaction[0])
     print("Done.")
     return
 
