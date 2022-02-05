@@ -32,7 +32,7 @@ async def discord_announce(msg):
     await client.get_user(presets.OWNER_ID).send(msg)
     for cur_channel in presets.announcement_channels:
         if client.get_channel(cur_channel) == None:
-            print(f'ERROR! Channel \'{str(cur_channel)}\' not found!')
+            print(f'ERROR! Channel \'{cur_channel}\' not found!')
             continue
         await client.get_channel(cur_channel).send(msg)
 
@@ -53,7 +53,7 @@ def init_discord_bot():
 
         clean_start = presets.SEND_INIT_MESSAGE
 
-        joined_servers = "\n".join((f'+ Connected to server: \'{guild.name}\' (ID: {str(guild.id)}).') for guild in client.guilds)
+        joined_servers = "\n".join((f'+ Connected to server: \'{guild.name}\' (ID: {guild.id}).') for guild in client.guilds)
         print(joined_servers)
         elapsed_time = str(round(time.time() - START_TIME, 1))
 
@@ -74,7 +74,7 @@ def init_discord_bot():
         if message.author == client.user:
             return
 
-        # print(f'Message from: "{str(message.author)}" saying "{message.content}".')
+        # print(f'Message from: "{message.author}" saying "{message.content}".')
         
         print('{0: <22}'.format(f'{message.guild} '), end='')
         print('{0: <22}'.format(f'> #{message.channel} '), end='')

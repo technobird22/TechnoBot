@@ -141,11 +141,11 @@ async def adventure(message):
         if data == "NOT_FOUND":
             return "Save not found! :/\nTo view available saves, use `.listsaves` to view available saves"
         await raw_long_output(message, data)
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content == ".listsaves" or message.content == ".saves":
         await list_saves(message)
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content.startswith(".save "):
         savename = str(message.content)[6:]
@@ -164,22 +164,22 @@ async def adventure(message):
         except:
             print("Invalid float")
             await message.channel.send(f'Hmm, was `{message.content[6:]}` a valid float?')
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content == ".help":
         return presets.ADVENTURE_HELP
 
     if message.content == ".getprompt":
         await raw_long_output(message, prompt)
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content == ".geteverything":
         await long_output(message, f'{prompt}==========< ***New (unsaved) history below*** >==========\n{"".join(history)}', "unknown")
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content == ".getsave":
         await raw_long_output(message, f'.setprompt {prompt} {"".join(history)}')
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content == "$":
         await message.channel.send('Continuing previous message...')
@@ -195,7 +195,7 @@ async def adventure(message):
 
     if not message.content.startswith(">"):
         print("IGNORING: Not a command")
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
 
     if message.content[1] != ' ':
         return "btw, if you're doing an action for adventure mode, please add a `SPACE` (' ') between the `>` and the start of your action!"
@@ -238,7 +238,7 @@ async def adventure_action(action, message):
         return f"Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?\n\nHere's what the model is returning:\n```{result}```. It should be returning something like this:\n```Foo\n> Bar\nBaz```"
 
     if result == "API_BUSY":
-        return "NO_OUTPUT"
+        return 'NO_OUTPUT'
     
     # if result == "WARNING: GENERAL ERROR":
     #     return "Strange... Something went wrong... Maybe the prompt is too long? Try `.clearhistory`?"
@@ -366,7 +366,7 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
             if output_type == "raw":
                 return "API_BUSY"
-            return "NO_OUTPUT"
+            return 'NO_OUTPUT'
 
         await message.add_reaction('✅')
 
@@ -378,7 +378,7 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
         parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
     await long_output(message, model_info + output, parts_cnt)
 
-        return "NO_OUTPUT"
+    return 'NO_OUTPUT'
     # return f'       __**Generation result:**__\n***{in_text}*** {raw_output_message}'
 
 async def react_image(message, attachment):
