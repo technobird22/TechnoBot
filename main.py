@@ -75,27 +75,34 @@ def init_discord_bot():
         if message.author == client.user:
             return
 
+        # print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.")
+        
+        print('{0: <20}'.format("'" + str(message.author) + "'"), end='')
+        print('{0: <35}'.format("> '" + str(message.guild) + "' > '#" + str(message.channel) + "' > "), end='')
+        print("'" + str(message.content) + "'.")
+        if len(str(message.content)) > 60:
         print("="*50)
-        print("Message from: '" + str(message.author) + "' saying '" + str(message.content) + "'.\nAttachments: '" + str(message.attachments) + '.')
-
+            # print('\n')
 
         if str(message.channel).startswith('Direct Message with ') and presets.IGNORE_DIRECT_MESSAGE and not str(message.channel) == 'Direct Message with ' + presets.OWNER_TAG:
-            print("Ignoring Direct message.")
+            print("^^^ Ignoring Direct message. ^^^")
             return
 
-        # print('URLS:', processor.get_urls(message.content))
+        urls = [attachment.url for attachment in message.attachments] + processor.get_urls(message.content)
 
-        for url in ([attachment.url for attachment in message.attachments] + processor.get_urls(message.content)):
+        if urls != []:
+            print('URLs and Attachments:', urls)
+            for url in urls:
             if await processor.is_url_img(url):
                 print("Reacting to image:", url)
                 await processor.react_image(message, url)
+            print("="*50)
 
-        if len(message.content) == 0: # Attachment only
+        if len(message.content) == 0: # Attachment only / status message
             return
 
-        if str(message.channel) not in presets.ALLOWED_CHANNELS:
-            print("[x] REJECTING MESSAGE FROM CHANNEL: " + str(message.channel) + "...")
-
+        # if str(message.channel) not in presets.ALLOWED_CHANNELS:
+        #     print("[x] REJECTING MESSAGE FROM CHANNEL: " + str(message.channel) + "...")
 
 
         OUTPUT_MESSAGE = "You shouldn't be seeing this... Please contact '" + presets.OWNER_TAG + "' on Discord to report this.\nThanks :)"
