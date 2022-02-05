@@ -76,12 +76,13 @@ def init_discord_bot():
 
         # print(f'Message from: "{str(message.author)}" saying "{message.content}".')
         
-        print('{0: <20}'.format(f'"{message.author}"'), end='')
-        print('{0: <35}'.format(f'> "{message.guild}" > "#{message.channel}" > '), end='')
-        print(f"'{message.content}'.")
-        if len(str(message.content)) > 60:
-            print("="*50)
-            # print('\n')
+        print('{0: <22}'.format(f'{message.guild} '), end='')
+        print('{0: <22}'.format(f'> #{message.channel} '), end='')
+        print('{0: <22}'.format(f'> {message.author} '), end='')
+        if len(str(message.content)) > 50:
+            print(f": ⤵\n{'-'*30}\n  > '{message.content}'.\n{'-'*75}")
+        else:
+            print(f"> '{message.content}'.")
 
         if str(message.channel).startswith('Direct Message with ') and presets.IGNORE_DIRECT_MESSAGE and not str(message.channel) == f'Direct Message with {presets.OWNER_TAG}':
             print("^^^ Ignoring Direct message. ^^^")
@@ -90,11 +91,12 @@ def init_discord_bot():
         urls = [attachment.url for attachment in message.attachments] + processor.get_urls(message.content)
         if urls != []:
             print('URLs and Attachments:', urls)
-            for url in urls:
+            for n, url in enumerate(urls):
+                print(f'Checking link {n}: ', end='')
                 if await processor.is_url_img(url):
-                    print("Reacting to image:", url)
+                    print(f'Link {n} is an image!')
                     await processor.react_image(message, url)
-            print("="*50)
+            print("="*60)
 
         if len(message.content) == 0: # Attachment only / status message
             return

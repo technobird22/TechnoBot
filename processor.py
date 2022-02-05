@@ -79,13 +79,13 @@ def get_urls(in_text):
 async def is_url_img(url):
     async with aiohttp.ClientSession() as session:
         async with session.head(url) as response:
-            print("HEADER:", response.headers["content-type"])
+            print(f'Header is "{response.headers["content-type"]}"')
             return response.headers["content-type"].startswith('image/')
 
 async def adventure(message):
     global history, prompt, bot_temp
     SHORT_SPACER = '-'*30
-    SPACER = '-'*50
+    SPACER = '-'*60
 
     if message.content.startswith(".clearhistory"):
         history = []
@@ -390,7 +390,7 @@ async def react_image(message, attachment):
 
     # print("Prediction result:", result)
 
-    print("Reacting...")
+    print("Adding reactions...")
 
     # Reactions are added if they pass a threshold for being a large enough proportion (prop) of the last reaction (L), or main reaction (M)
     # Absolute Prop refers to the absolute percentage match
@@ -402,20 +402,25 @@ async def react_image(message, attachment):
     orig_acc = result[0][2]
     for cur_reaction in result:
         if (cur_reaction[2]/100)<APROP_limit or (cur_reaction[2]/past_acc) < LPROP_limit or (cur_reaction[2]/orig_acc) < MPROP_limit:
-            print("---\nThresholds not met, so NOT reacting with: ", end='')
-            print(f'[{cur_reaction[1]}]: {cur_reaction[0]} ->  lprop: {round(cur_reaction[2]/past_acc, 2)}.        mprop: {round(cur_reaction[2]/orig_acc, 2)}')
+            print("Thresholds not met, so NOT reacting with: ", end='')
+            print(f'{"{:4.2f}".format(cur_reaction[2])}% => ', end='')
+            print(f'[ {cur_reaction[1]} ]: {cur_reaction[0]} ->  lprop: {round(cur_reaction[2]/past_acc, 2)}.        mprop: {round(cur_reaction[2]/orig_acc, 2)}')
             if cur_reaction[2] == orig_acc:
                 # await message.add_reaction('❔')
                 pass
             break
         else:
-            print(f'[{cur_reaction[1]}]: {cur_reaction[0]} ->  lprop: {round(cur_reaction[2]/past_acc, 2)}.        mprop: {round(cur_reaction[2]/orig_acc, 2)}')
+            print(f'{"{:6.2f}".format(cur_reaction[2])}% => ', end='')
+            print('{0: <7}'.format(f'[ {cur_reaction[1]} ]') + '{0: <35}'.format(f'{cur_reaction[0]} -> '), end='')
+            print('{0: <20}'.format(f'lprop: {round(cur_reaction[2]/past_acc, 2)}.'), end='')
+            print(f'mprop: {round(cur_reaction[2]/orig_acc, 2)}')
             past_acc = cur_reaction[2]
             try:
                 await message.add_reaction(cur_reaction[1])
             except:
                 print("Reaction failed:", cur_reaction[0])
     print("Done.")
+    print('-'*30)
     return
 
 
