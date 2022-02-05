@@ -20,22 +20,22 @@ async def list_saves(message):
     data = json.load(open('adventure_presets.json'))
 
     embedVar = discord.Embed(title="Saves/Presets", description='To load a save, run `.load [NAME OF SAVE]`\nTo create a save of the current message history, run `.save [SAVE_NAME]`!', color=0x00ff00, timestamp=datetime.datetime.utcnow())
-    preset_names = str(''.join([('- "'+cur+'"\n') for cur in data['presets'].keys()]))
-    save_names = str(''.join([('- "'+cur+'"\n') for cur in data['saves'].keys()]))
-    legacy_names = str(''.join([('- "'+cur+'"\n') for cur in data['legacy_saves'].keys()]))
+    preset_names = str(''.join([(f'- "{cur}"\n') for cur in data['presets'].keys()]))
+    save_names = str(''.join([(f'- "{cur}"\n') for cur in data['saves'].keys()]))
+    legacy_names = str(''.join([(f'- "{cur}"\n') for cur in data['legacy_saves'].keys()]))
     print(preset_names)
     print(save_names)
     embedVar.add_field(name="Presets", value=preset_names, inline=False)
     if len(save_names) != 0:
         embedVar.add_field(name="User saves", value=save_names, inline=False)
-    if len(legacy_names) != 0:
-        embedVar.add_field(name="Legacy saves", value=legacy_names, inline=False)
+    # if len(legacy_names) != 0:
+    #     embedVar.add_field(name="Legacy saves", value=legacy_names, inline=False)
     await message.reply(embed=embedVar)
 
 def load(preset_name):
     data = json.load(open('adventure_presets.json'))
 
-    print("Loading preset:", preset_name)
+    print(f'Loading preset "{preset_name}"...')
 
     try:
         result = data['presets'][preset_name]
@@ -58,7 +58,7 @@ def load(preset_name):
 
 def save(savename):
     data = json.load(open('adventure_presets.json'))
-    print("Saving as:", savename)
+    print(f'Saving as: "{savename}"')
 
     if savename in data["presets"] or savename in data["saves"]:
         print("Already taken!")
@@ -84,38 +84,42 @@ async def is_url_img(url):
 
 async def adventure(message):
     global history, prompt, bot_temp
+    SHORT_SPACER = '-'*30
+    SPACER = '-'*50
 
     if message.content.startswith(".clearhistory"):
         history = []
-        return "Successfully cleared history!"
+        return 'Successfully cleared history!'
 
     if message.content.startswith(".continue") or message.content.startswith(".complete"):
-        return "btw, continue commands don't work here. Try using another channel that isn't in adventure mode"
+        return 'btw, continue commands don\'t work here. Try using another channel that isn\'t in adventure mode'
 
+    # Helpful messages
     if message.content == ".save":
-        return "To create a save, please give a name under which the save will be created\nEg. `.save [NAME OF SAVE]`"
+        return 'To create a save, please give a name under which the save will be created\nEg. `.save [NAME OF SAVE]`'
 
     if message.content == ".load":
-        return "To load a save, please give the name of the save\nEg. `.load [savename]`"
+        return 'To load a save, please give the name of the save\nEg. `.load [savename]`'
 
     if message.content == ".temp":
-        return "The current temperature for adventure mode is " + str(bot_temp) + "\nYou can set a new temp with `.temp [NEW TEMP]`"
+        return f'The current temperature for adventure mode is `{bot_temp}`\nYou can set a new temp with `.temp [NEW TEMP]`'
 
+    # Utility commands
     if message.content == ".trim":
-        print('-'*20)
+        print(SHORT_SPACER)
         print("Trimmed off:", history[:8])
-        print('-'*50)
+        print(SPACER)
         print("Keeping:", history[8:])
-        print('-'*50)
+        print(SHORT_SPACER)
         history = history[8:]
         return "Trimmed off the first `4` messages from history!"
 
-    if message.content == ".delete" or message.content == ".undo":
-        print('-'*20)
+    if message.content == ".undo":
+        print(SHORT_SPACER)
         print("Deleting last messages from history:", history[-2:])
-        print('-'*50)
+        print(SPACER)
         print("Keeping:", history[:-2])
-        print('-'*50)
+        print(SPACER)
         history = history[:-2]
         return "Undid the last action!"
 
@@ -148,18 +152,18 @@ async def adventure(message):
 
         result = save(savename)
         if result == "TAKEN":
-            return "The name '"+savename+"' has been used already!\nPlease try saving it under a different name."
-        return "Successfully saved current context under '"+savename+"'!"
+            return f'The name "{savename}" has been used already!\nPlease try saving it under a different name.'
+        return f'Successfully saved current context under "{savename}"!'
 
     if message.content.startswith(".temp"):
         print("Changing temperature...")
         try:
-            await message.channel.send('Changing temperature to `' + message.content[6:] + '`!')
+            await message.channel.send(f'Changing temperature to `{message.content[6:]}`...')
             bot_temp = float(message.content[6:])
             await message.channel.send('Done! New settings now in place.')
         except:
             print("Invalid float")
-            await message.channel.send('Hmm, was `' + message.content[6:] + '` a valid float?')
+            await message.channel.send(f'Hmm, was `{message.content[6:]}` a valid float?')
         return "NO_OUTPUT"
 
     if message.content == ".help":
@@ -170,11 +174,11 @@ async def adventure(message):
         return "NO_OUTPUT"
 
     if message.content == ".geteverything":
-        await long_output(message, prompt + '------------------------------\n' + ''.join(history), "idk")
+        await long_output(message, f'{prompt}==========< ***New (unsaved) history below*** >==========\n{"".join(history)}', "unknown")
         return "NO_OUTPUT"
 
-    if message.content == ".getdata" or message.content == ".getsave":
-        await raw_long_output(message, '.setprompt ' + prompt + ''.join(history))
+    if message.content == ".getsave":
+        await raw_long_output(message, f'.setprompt {prompt} {"".join(history)}')
         return "NO_OUTPUT"
 
     if message.content == "$":
@@ -183,14 +187,14 @@ async def adventure(message):
 
     if message.content.startswith("$"):
         if message.content[1] != ' ':
-            return "Please add a `SPACE` (' ') between the `>` and the start of your adventure inject!"
+            return 'Please add a **space** (\' \') between the `$` and the start of your adventure inject and try again.'
 
-        history[-1] = history[-1][:-1] + ' ' + message.content[2:] + '\n'
+        history[-1] = f'{history[-1][:-1]} {message.content[2:]}\n'
         await message.channel.send('Injected action. Continuing from action...')
         return await adventure_action('', message)
 
     if not message.content.startswith(">"):
-        print("IGNORING: IGNORE NON PROMPT")
+        print("IGNORING: Not a command")
         return "NO_OUTPUT"
 
     if message.content[1] != ' ':
@@ -211,7 +215,7 @@ async def adventure_action(action, message):
         print("Continuing previous messages...")
         history[-1] = history[-1].rstrip() # Cut off newline so model will complete last output
     else:
-        print("Generating adventure step for prompt:" + human_start + ' ' + action[2:] + "\n")
+        print(f"Generating adventure step for prompt: {human_start} {action[2:]}\n")
 
     for attempt in range(1):
         if is_completion:
@@ -231,7 +235,7 @@ async def adventure_action(action, message):
     else:
         if not result:
             return "The model already decided to end it's message, and refuses to elaborate further... Try an action instead ⚔"
-        return "Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?\n\nHere's what the model is returning:\n```" + result + "```. It should be returning something like this:\n```Foo\n> Bar\nBaz```"
+        return f"Warning: The model's responses aren't being parsed correctly\nDoes the prompt follow the correct format for adventure mode?\n\nHere's what the model is returning:\n```{result}```. It should be returning something like this:\n```Foo\n> Bar\nBaz```"
 
     if result == "API_BUSY":
         return "NO_OUTPUT"
@@ -241,7 +245,7 @@ async def adventure_action(action, message):
 
     # Save to history
     if not is_completion:
-        history.append(human_start + ' ' + action[2:] + "\n")
+        history.append(f'{human_start} {action[2:]}\n')
 
     try:
         start_index = 0
@@ -266,9 +270,9 @@ async def adventure_action(action, message):
         return "huh. model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
 
     if is_completion:
-        history[-1] += ' ' + parsed_output + "\n"
+        history[-1] += f' {parsed_output}\n'
     else:
-        history.append(' ' + parsed_output + "\n")
+        history.append(f' {parsed_output}\n')
 
     return parsed_output
 
@@ -279,7 +283,7 @@ async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
     part_num = 1
 
     embedVar = discord.Embed(title="Generation Result", description=OUTPUT_MESSAGE[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
-    embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
+    embedVar.set_footer(text=f'Part {part_num} of {parts_cnt}. Requested by {message.author}.')
     print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
     await message.reply(embed=embedVar,
             allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
@@ -293,8 +297,8 @@ async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
     while len(OUTPUT_MESSAGE) > 0:
         part_num += 1
 
-        embedVar = discord.Embed(title="Generation Result (continued)", description='...'+OUTPUT_MESSAGE[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
-        embedVar.set_footer(text="Part " + str(part_num) + " of " + str(parts_cnt) + ". Requested by " + str(message.author))
+        embedVar = discord.Embed(title="Generation Result (continued)", description=f'...{OUTPUT_MESSAGE[:LEN_CAP]}...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        embedVar.set_footer(text=f'Part {part_num} of {parts_cnt}. Requested by {message.author}.')
         print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
         await message.reply(embed=embedVar,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
@@ -309,7 +313,7 @@ async def raw_long_output(message, OUTPUT_MESSAGE):
     print("LC:", LEN_CAP)
     part_num = 1
 
-    embedVar = discord.Embed(title="Savefile", description='```md\n'+OUTPUT_MESSAGE[:LEN_CAP]+'```', color=0xff0000, timestamp=datetime.datetime.utcnow(), )
+    embedVar = discord.Embed(title="Output", description=f'```md\n{OUTPUT_MESSAGE[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
     print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
     await message.reply(embed=embedVar,
             allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
@@ -323,7 +327,7 @@ async def raw_long_output(message, OUTPUT_MESSAGE):
     while len(OUTPUT_MESSAGE) > 0:
         part_num += 1
 
-        embedVar = discord.Embed(title="Savefile (continued)", description='```'+OUTPUT_MESSAGE[:LEN_CAP]+'```', color=0xff0000, timestamp=datetime.datetime.utcnow())
+        embedVar = discord.Embed(title="Output (continued)", description=f'```{OUTPUT_MESSAGE[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
         print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
         await message.reply(embed=embedVar,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
@@ -369,26 +373,26 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
         if output_type == "raw":
             return raw_output_message
 
-        model_info = "`Model: GPT-J-6B, length="+str(length)+", temp="+str(temp)+", top_p="+str(top_p)+". Elapsed: " + str(round(time.time()-START_TIME, 1)) + "s.`"
-        output = '\n***' + in_text + '*** ' + raw_output_message
+        model_info = f'`Model: GPT-J-6B, length={length}, temp={temp}, top_p={top_p}. Elapsed: {round(time.time()-START_TIME, 1)}s.`'
+        output = f'\n***{in_text}*** {raw_output_message}'
         parts_cnt = math.ceil((len(raw_output_message)+1-(1900-len(in_text)))/1900) + 1
-        await long_output(message, model_info+output, parts_cnt)
+    await long_output(message, model_info + output, parts_cnt)
 
         return "NO_OUTPUT"
-        # return "       __**Generation result:**__\n***" + in_text + "*** " + str(raw_output_message)
+    # return f'       __**Generation result:**__\n***{in_text}*** {raw_output_message}'
 
 async def react_image(message, attachment):
     global client
 
-    print("Connecting to API...")
+    # print("Connecting to API...")
     
     result = await interfacer.react_image(attachment)
 
-    print("Prediction result:", result)
+    # print("Prediction result:", result)
 
     print("Reacting...")
 
-    # Reactions are added if they pass a threshold for being a large enough proportion (PROP) of the last reaction (L), or main reaction (M)
+    # Reactions are added if they pass a threshold for being a large enough proportion (prop) of the last reaction (L), or main reaction (M)
     # Absolute Prop refers to the absolute percentage match
     LPROP_limit = 0.31
     MPROP_limit = 0.5
@@ -399,14 +403,13 @@ async def react_image(message, attachment):
     for cur_reaction in result:
         if (cur_reaction[2]/100)<APROP_limit or (cur_reaction[2]/past_acc) < LPROP_limit or (cur_reaction[2]/orig_acc) < MPROP_limit:
             print("---\nThresholds not met, so NOT reacting with: ", end='')
-            print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
+            print(f'[{cur_reaction[1]}]: {cur_reaction[0]} ->  lprop: {round(cur_reaction[2]/past_acc, 2)}.        mprop: {round(cur_reaction[2]/orig_acc, 2)}')
             if cur_reaction[2] == orig_acc:
-                # await message.add_reaction('❓')
                 # await message.add_reaction('❔')
                 pass
             break
         else:
-            print(cur_reaction[0], "->  lprop:", round(cur_reaction[2]/past_acc, 2), ".        mprop:", round(cur_reaction[2]/orig_acc, 2))
+            print(f'[{cur_reaction[1]}]: {cur_reaction[0]} ->  lprop: {round(cur_reaction[2]/past_acc, 2)}.        mprop: {round(cur_reaction[2]/orig_acc, 2)}')
             past_acc = cur_reaction[2]
             try:
                 await message.add_reaction(cur_reaction[1])
