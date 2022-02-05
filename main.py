@@ -84,7 +84,7 @@ def init_discord_bot():
         else:
             print(f"> '{message.content}'.")
 
-        if str(message.channel).startswith('Direct Message with ') and presets.IGNORE_DIRECT_MESSAGE and not str(message.channel) == f'Direct Message with {presets.OWNER_TAG}':
+        if str(message.channel).startswith('Direct Message with ') and presets.IGNORE_DIRECT_MESSAGES and not str(message.channel) == f'Direct Message with {presets.OWNER_TAG}':
             print("^^^ Ignoring Direct message. ^^^")
             return
 
@@ -108,50 +108,21 @@ def init_discord_bot():
         OUTPUT_MESSAGE = f'You shouldn\'t be seeing this... Please contact "{presets.OWNER_TAG}" on Discord to report this.\nThanks :)'
 
         # User commands
-        if message.content.startswith(".goose"):
-            await start_typing(message)
-            goose_id = str(random.randint(0, 1000)).zfill(4)
-            print("Getting Goose... HONK!   ID:", goose_id)
-            OUTPUT_MESSAGE = presets.get_goose(goose_id)
+        if message.content[:9] == ".complete" or message.content[:9] == ".continue":
+            in_text = message.content[10:]
+
+            await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))
+            OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
         # Commands that require power ('!')
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
             global bot_start_msg
-            vowels = ['a', 'e', 'i', 'o', 'u']
-            quote = random.choice(presets.QUOTES)
-            SPACER = f'~~{" "*160}~~'
-            SMOL_SPACER = f'~~{" "*50}~~'
-            positive_things = ['great', 'wonderful', 'awesome', 'well', 'okay', 'fantastic', 'amazing', 'excellent']
             clean_start = 0
-
             if "bot_start_msg" not in globals():
                 await message.author.send('Hold on... I\'m still starting up...')
                 await asyncio.sleep(5)
 
-            await message.author.send(f'{SPACER}\n**{random.choice(presets.GREETINGS)} {presets.OWNER_NAME}!** :)\nJust finished starting up <t:{int(time.time())}:R> {random.choice(presets.START_EMOTES)} \nHope you\'re doing {random.choice(positive_things)}!')
-            await message.author.send(f'{SMOL_SPACER}\n{bot_start_msg}')
-            await message.author.send(f'''{SPACER}
-            **__Error log:__**
-                `Empty :)`
-
-            **__Unfinished request queue:__** *(`0` pending)*
-                `Nothing here! :)`
-            ''')
-            if quote[0] == '':
-                quote[0] = 'Unknown'
-            await message.author.send(f'{SPACER}\n> ***"{quote[1]}"***\n            *- {quote[0]}*')
-
-            positive_descriptor = random.choice(presets.GOOD_THINGS)
-            if positive_descriptor[0].lower() in vowels:
-                indefinite_article = "an"
-            else:
-                indefinite_article = "a"
-            await message.author.send(f'{SPACER}\nHave {indefinite_article} {positive_descriptor} day!')
-
-            if str(message.channel) != f'Direct Message with {presets.OWNER_TAG}':
-                msg_alert = await message.channel.send(f'<@!{presets.OWNER_ID}> Psst. Check your DMs {random.choice(presets.START_EMOTES)}')
-                await asyncio.sleep(5)
-                await msg_alert.delete()
+            await processor.send_init_message(message, bot_start_msg)
             return
 
         elif str(message.author) in presets.POWERFUL and message.content[0] == '!':
@@ -195,24 +166,16 @@ def init_discord_bot():
 
         # Reply to a message
         else:
-            try:
-                await message.channel.send(presets.PRESET_RESPONSES[str(message.content)])
-                await reset_status()
-                return
-            except KeyError:
-                pass
+            if await custom_commands.receive_message(message) is not None:
+                try:
+                    await message.channel.send(presets.PRESET_RESPONSES[str(message.content)])
+                    await reset_status()
+                    return
+                except KeyError:
+                    pass
 
-            if message.content[:9] == ".complete" or message.content[:9] == ".continue":
-                in_text = message.content[10:]
-
-                await client.change_presence(activity=discord.Game(name='with AI | Thinking...'))
-                OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
-
-            else:
-                await custom_commands.receive_message(message)
-
-                await reset_status()
-                return
+            await reset_status()
+            return
 
         if OUTPUT_MESSAGE == "NO_OUTPUT":
             await reset_status()

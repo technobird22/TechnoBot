@@ -423,6 +423,37 @@ async def react_image(message, attachment):
     print('-'*30)
     return
 
+async def send_init_message(message, bot_start_msg):
+    SPACER = f'~~{" "*160}~~'
+    SMOL_SPACER = f'~~{" "*50}~~'
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    positive_things = ['great', 'wonderful', 'awesome', 'well', 'okay', 'fantastic', 'amazing', 'excellent']
+    quote = random.choice(presets.QUOTES)
+
+    await message.author.send(f'{SPACER}\n**{random.choice(presets.GREETINGS)} {presets.OWNER_NAME}!** :)\nJust finished starting up <t:{int(time.time())}:R> {random.choice(presets.START_EMOTES)} \nHope you\'re doing {random.choice(positive_things)}!')
+    await message.author.send(f'{SMOL_SPACER}\n{bot_start_msg}')
+    await message.author.send(f'''{SPACER}
+    **__Error log:__**
+        `Empty :)`
+
+    **__Unfinished request queue:__** *(`0` pending)*
+        `Nothing here! :)`
+    ''')
+    if quote[0] == '':
+        quote[0] = 'Unknown'
+    await message.author.send(f'{SPACER}\n> ***"{quote[1]}"***\n            *- {quote[0]}*')
+
+    positive_descriptor = random.choice(presets.GOOD_THINGS)
+    if positive_descriptor[0].lower() in vowels:
+        indefinite_article = "an"
+    else:
+        indefinite_article = "a"
+    await message.author.send(f'{SPACER}\nHave {indefinite_article} {positive_descriptor} day!')
+
+    if str(message.channel) != f'Direct Message with {presets.OWNER_TAG}':
+        msg_alert = await message.channel.send(f'<@!{presets.OWNER_ID}> Psst. Check your DMs {random.choice(presets.START_EMOTES)}')
+        await asyncio.sleep(5)
+        await msg_alert.delete()
 
 if __name__ == '__main__':
     import main

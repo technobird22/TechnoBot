@@ -6,7 +6,6 @@ Currently, the bot has the following functions:
 - AI powered Dungeon style game
 - GPT-J-6B Interface (Text completion)
 - CLIP (Emoji reactions to images)
-- Goose (sends a random image of a goose)
 
 # Todo
 We are working on adding the following features:
