@@ -6,7 +6,6 @@ import os
 import sys
 import time
 import aiohttp
-
 import json
 import numpy as np
 
@@ -46,7 +45,7 @@ async def complete(txt_in, length, temp, top_p):
                 print("Error accessing API!")
                 print(response.status)
                 print(response.content)
-                return "API_ERROR"
+                return "INTERNAL_API_CONNECTION_ERROR"
 
 def exit_things():
     '''Save queue, logs, etc.'''

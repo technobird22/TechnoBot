@@ -1,13 +1,14 @@
 '''Takes inputs and parses and queues them to interface with the API'''
+import discord
 import asyncio
-import json
-import re
 import aiohttp
-import random
+
 import math
 import time
 import datetime
-import discord
+import random
+import json
+import re
 
 import interfacer
 import presets
@@ -361,9 +362,8 @@ async def raw_long_output(message, OUTPUT_MESSAGE):
 
 async def complete(in_text, message, length, temp, top_p, output_type="embed"):
     if in_text == '':
-        return "Bot can't take empty prompts!"
+        return "`complete` can't take empty prompts! What do you want me to autocomplete?"
 
-    # Manual typing as this part can last quite long
     async with message.channel.typing():
         START_TIME = time.time()
         loading_emote = random.choice(presets.LOADING_EMOTES)
@@ -377,8 +377,8 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
         if raw_output_message == "BUSY":
             print("API Rate limit")
-            busy_emote = random.choice(presets.BUSY_EMOTES)
-            await message.add_reaction(busy_emote)
+            busy_emote = random.choice(presets.SAD_EMOTES)
+            await message.add_reaction(sad_emote)
             reply = await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
             await asyncio.sleep(20)
             await message.clear_reaction(busy_emote)
@@ -387,6 +387,19 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
             if output_type == "raw":
                 return "API_BUSY"
+            return 'NO_OUTPUT'
+
+        if raw_output_message == "WARNING: GENERAL ERROR":
+            print("API Error (general)")
+            busy_emote = random.choice(presets.SAD_EMOTES)
+            await message.add_reaction(sad_emote)
+            reply = await message.reply('._.  Something went wrong with the completion API. Please retry shortly.')
+            await asyncio.sleep(20)
+            await message.clear_reaction(busy_emote)
+            await message.add_reaction('🔁')
+
+            if output_type == "raw":
+                return "API_ERROR"
             return 'NO_OUTPUT'
 
         await message.add_reaction('✅')
