@@ -83,7 +83,27 @@ async def is_url_img(url):
     async with aiohttp.ClientSession() as session:
         async with session.head(url) as response:
             print(f'Header is "{response.headers["content-type"]}"')
+            # return response.headers["content-type"].startswith('image/') or response.headers["content-type"].startswith('video/')
             return response.headers["content-type"].startswith('image/')
+
+async def get_tenor_gif(url):
+    # if 'c.tenor.com/' in url:
+    #     print("Already a raw tenor gif!")
+    #     return url
+
+    print('Sending Tenor request... ', end='', flush=True)
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            assert response.status == 200
+            response_text = await response.text()
+            print('Response received!', flush=True)
+            try:
+                gif_url = re.findall(r'<meta class="dynamic" property="og:url" content="(.*?)"', response_text)[0]
+                print(f'Extracted gif url: "{gif_url}"')
+            except UnicodeDecodeError:
+                print('Unicode error!')
+                gif_url = None
+    return gif_url
 
 async def adventure(message):
     global history, prompt, bot_temp

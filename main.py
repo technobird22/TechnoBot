@@ -98,7 +98,13 @@ def init_discord_bot():
 
             for n, url in enumerate(urls):
                 print(f'Checking link {n}: ', end='')
-                if await processor.is_url_img(url):
+                
+                if '://tenor.com/' in url:
+                    print(f'Link {n} is a tenor gif')
+                    url = await processor.get_tenor_gif(url)
+                    await processor.react_image(message, url)
+
+                elif await processor.is_url_img(url):
                     print(f'Link {n} is an image!')
                     await processor.react_image(message, url)
             print('='*50)
