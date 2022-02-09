@@ -16,6 +16,9 @@ history = []
 prompt = presets.ADVENTURE_PROMPT
 bot_temp = 0.7
 
+SHORT_SPACER = '-'*30
+SPACER = '-'*60
+
 async def list_saves(message):
     data = json.load(open('adventure_presets.json'))
 
@@ -84,8 +87,6 @@ async def is_url_img(url):
 
 async def adventure(message):
     global history, prompt, bot_temp
-    SHORT_SPACER = '-'*30
-    SPACER = '-'*60
 
     if message.content.startswith(".clearhistory"):
         history = []
@@ -219,9 +220,9 @@ async def adventure_action(action, message):
 
     for attempt in range(1):
         if is_completion:
-            result = await complete(prompt + ''.join(history), message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+            result = await complete(prompt + ''.join(history), message, length=128, temp=bot_temp, top_p=0.98, output_type="raw")
         else:
-            result = await complete(prompt + ''.join(history) + human_start + ' ' + action[2:] + "\n", message, length=128, temp=bot_temp, top_p=0.9, output_type="raw")
+            result = await complete(f'{prompt}{"".join(history)}{human_start} {action[2:]}\n', message, length=256, temp=bot_temp, top_p=0.98, output_type="raw")
 
         result = result.strip()
         if result == "WARNING: GENERAL ERROR":
@@ -249,25 +250,25 @@ async def adventure_action(action, message):
 
     try:
         start_index = 0
-        print('-'*30)
+        print(SHORT_SPACER)
         print("Raw Output:", result)
         print("start_index:", start_index)
-        print('-'*30)
+        print(SHORT_SPACER)
         print("Truncated (start):", result[:start_index])
         parsed_output = result[start_index:]
 
-        print('-'*30)
+        print(SHORT_SPACER)
         # print("Truncated (end):", result[parsed_output.find(human_start)-1:])
         if human_start in result:
             parsed_output = parsed_output[:parsed_output.find(human_start)-1]
         elif result[-1] != '.' and '.' in result:
             parsed_output = result[:result.rfind('.')+1]
         # parsed_output = parsed_output.replace(bot_start + ' ', '')
-        print('-'*30)
+        print(SHORT_SPACER)
         print("Parsed output:", parsed_output)
-        print('-'*30)
+        print(SHORT_SPACER)
     except:
-        return "huh. model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
+        return "Huh. The model output didn't contain tokens I'm looking for (`>`)...\nMaybe the API glitched? Try again? Otherwise it could be the prompt or something... Try changing that..."
 
     if is_completion:
         history[-1] += f' {parsed_output}\n'
@@ -387,6 +388,10 @@ async def react_image(message, attachment):
     # print("Connecting to API...")
     
     result = await interfacer.react_image(attachment)
+    if result == "API_ERROR":
+        await message.reply('Image reaction API error. What content are you sending? Videos are currently not supported Please try again later.')
+        # await message.add_reaction('')
+        return
 
     # print("Prediction result:", result)
 
@@ -420,19 +425,19 @@ async def react_image(message, attachment):
             except:
                 print("Reaction failed:", cur_reaction[0])
     print("Done.")
-    print('-'*30)
+    print(SHORT_SPACER)
     return
 
 async def send_init_message(message, bot_start_msg):
-    SPACER = f'~~{" "*160}~~'
-    SMOL_SPACER = f'~~{" "*50}~~'
+    HORIZ_RULE = f'~~{" "*160}~~'
+    SHORT_HORIZ_RULE = f'~~{" "*50}~~'
     vowels = ['a', 'e', 'i', 'o', 'u']
     positive_things = ['great', 'wonderful', 'awesome', 'well', 'okay', 'fantastic', 'amazing', 'excellent']
     quote = random.choice(presets.QUOTES)
 
-    await message.author.send(f'{SPACER}\n**{random.choice(presets.GREETINGS)} {presets.OWNER_NAME}!** :)\nJust finished starting up <t:{int(time.time())}:R> {random.choice(presets.START_EMOTES)} \nHope you\'re doing {random.choice(positive_things)}!')
-    await message.author.send(f'{SMOL_SPACER}\n{bot_start_msg}')
-    await message.author.send(f'''{SPACER}
+    await message.author.send(f'{HORIZ_RULE}\n**{random.choice(presets.GREETINGS)} {presets.OWNER_NAME}!** :)\nJust finished starting up <t:{int(time.time())}:R> {random.choice(presets.START_EMOTES)} \nHope you\'re doing {random.choice(positive_things)}!')
+    await message.author.send(f'{SHORT_HORIZ_RULE}\n{bot_start_msg}')
+    await message.author.send(f'''{HORIZ_RULE}
     **__Error log:__**
         `Empty :)`
 
@@ -441,21 +446,19 @@ async def send_init_message(message, bot_start_msg):
     ''')
     if quote[0] == '':
         quote[0] = 'Unknown'
-    await message.author.send(f'{SPACER}\n> ***"{quote[1]}"***\n            *- {quote[0]}*')
+    await message.author.send(f'{HORIZ_RULE}\n> ***"{quote[1]}"***\n            *- {quote[0]}*')
 
     positive_descriptor = random.choice(presets.GOOD_THINGS)
     if positive_descriptor[0].lower() in vowels:
         indefinite_article = "an"
     else:
         indefinite_article = "a"
-    await message.author.send(f'{SPACER}\nHave {indefinite_article} {positive_descriptor} day!')
+    await message.author.send(f'{HORIZ_RULE}\nHave {indefinite_article} {positive_descriptor} day!')
 
-    if str(message.channel) != f'Direct Message with {presets.OWNER_TAG}':
+    if str(message.channel) != f'Direct Message with {presets.OWNER_TAG}' and presets.STARTUP_REMINDER:
         msg_alert = await message.channel.send(f'<@!{presets.OWNER_ID}> Psst. Check your DMs {random.choice(presets.START_EMOTES)}')
         await asyncio.sleep(5)
         await msg_alert.delete()
 
 if __name__ == '__main__':
-    import main
-    main.start_all()
-    # print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")
+    print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")

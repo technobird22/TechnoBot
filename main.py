@@ -76,11 +76,13 @@ def init_discord_bot():
 
         # print(f'Message from: "{message.author}" saying "{message.content}".')
         
+        if len(str(message.content)) > 50:
+            print('-'*75)
         print('{0: <22}'.format(f'{message.guild} '), end='')
         print('{0: <22}'.format(f'> #{message.channel} '), end='')
         print('{0: <22}'.format(f'> {message.author} '), end='')
         if len(str(message.content)) > 50:
-            print(f": ⤵\n{'-'*30}\n  > '{message.content}'.\n{'-'*75}")
+            print(f":  ⤵\n  > '{message.content}'.\n{'-'*75}")
         else:
             print(f"> '{message.content}'.")
 
@@ -90,13 +92,16 @@ def init_discord_bot():
 
         urls = [attachment.url for attachment in message.attachments] + processor.get_urls(message.content)
         if urls != []:
-            print('URLs and Attachments:', urls)
+            print('URLs and Attachments:')
+            for n, url in enumerate(urls):
+                print(f'   #{n}: {url}')
+
             for n, url in enumerate(urls):
                 print(f'Checking link {n}: ', end='')
                 if await processor.is_url_img(url):
                     print(f'Link {n} is an image!')
                     await processor.react_image(message, url)
-            print("="*60)
+            print('='*50)
 
         if len(message.content) == 0: # Attachment only / status message
             return
@@ -131,7 +136,7 @@ def init_discord_bot():
                 await start_typing(message)
                 print("Clearing history...")
                 await message.channel.send("> Clearing chat history...")
-                print(f'{"="*30} DUMP OF CURRENT HISTORY: {"="*30}\n{history}')
+                print(f"{'='*25} DUMP OF CURRENT HISTORY: {'='*25}\n{history}")
                 history = ""
                 OUTPUT_MESSAGE = "> Cleared history!"
 
@@ -139,7 +144,7 @@ def init_discord_bot():
                 print("Stopping bot")
                 await discord_announce('**Bot is** `STOPPING`!')
                 await client.change_presence(activity=discord.Game(name='with AI | STOPPING'))
-                print(f'{"="*30} DUMP OF CURRENT HISTORY: {"="*30}\n{history}')
+                print(f"{'='*25} DUMP OF CURRENT HISTORY: {'='*25}\n{history}")
                 
                 await discord_announce('**Bot is** `STOPPING`!')
                 await message.channel.send('**Bot is** `STOPPING`!')
@@ -184,17 +189,15 @@ def init_discord_bot():
         LEN_CAP = 1950
         while len(OUTPUT_MESSAGE) >= LEN_CAP:
             elapsed_time = str(round(time.time() - START_TIME, 2))
-            await message.reply(OUTPUT_MESSAGE[:LEN_CAP],
-                    allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+            await message.reply(OUTPUT_MESSAGE[:LEN_CAP], allowed_mentions=presets.ALLOWED_MENTIONS)
             print(f"BOT Response: '{OUTPUT_MESSAGE}'. Responded in {elapsed_time} seconds.")
             if len(OUTPUT_MESSAGE) >= LEN_CAP:
                 OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
 
         elapsed_time = str(round(time.time() - START_TIME, 2))
-        await message.reply(OUTPUT_MESSAGE[:LEN_CAP],
-                allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
+        await message.reply(OUTPUT_MESSAGE[:LEN_CAP], allowed_mentions=presets.ALLOWED_MENTIONS)
         print(f"BOT Response: '{OUTPUT_MESSAGE}'. Responded in {elapsed_time} seconds.")
-        print("="*50)
+        print('='*50)
 
         await reset_status()
 
@@ -230,7 +233,7 @@ def start_all():
     token = os.getenv('DISCORD_TOKEN')
     print("[OK] Got Discord token!", flush=True)
 
-    print("[OK] Running Discord bot...", flush=True)
+    print("[OK] The Discord bot is running!... ⤵\n       ↪ Catch it before it gets away!\n", flush=True)
     client.run(token)
 
 if __name__ == "__main__":

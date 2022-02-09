@@ -27,8 +27,7 @@ async def react_image(url_in):
                 return await response.json()
             else:
                 print("Error accessing API!")
-                print(response.status)
-                print(response.content)
+                print(f'Error {response.status}: {response.reason}')
                 return "API_ERROR"
 
 async def complete(txt_in, length, temp, top_p):
