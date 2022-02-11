@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 import presets
 import interfacer
-import processor
+import utils
 import custom_commands
 
 
@@ -57,7 +57,7 @@ def init_discord_bot():
             print("^^^ Ignoring Direct message. ^^^")
             return
 
-        urls = [attachment.url for attachment in message.attachments] + processor.get_urls(message.content)
+        urls = [attachment.url for attachment in message.attachments] + utils.get_urls(message.content)
         if urls != []:
             print('URLs and Attachments:')
             for n, url in enumerate(urls):
@@ -68,12 +68,12 @@ def init_discord_bot():
                 
                 if '://tenor.com/' in url:
                     print(f'Link {n} is a tenor gif')
-                    url = await processor.get_tenor_gif(url)
-                    await processor.react_image(message, url)
+                    url = await utils.get_tenor_gif(url)
+                    await utils.react_image(message, url)
 
-                elif await processor.is_url_img(url):
+                elif await utils.is_url_img(url):
                     print(f'Link {n} is an image!')
-                    await processor.react_image(message, url)
+                    await utils.react_image(message, url)
             print('='*50)
 
         if len(message.content) == 0: # Attachment only / channel status message
@@ -91,7 +91,7 @@ def init_discord_bot():
             in_text = message.content[10:]
 
             async with message.channel.typing():
-                OUTPUT_MESSAGE = await processor.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
+                OUTPUT_MESSAGE = await utils.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
         # Commands that require power ('!')
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
@@ -101,7 +101,7 @@ def init_discord_bot():
                 await message.author.send('Hold on... I\'m still starting up...')
                 await asyncio.sleep(5)
 
-            await processor.send_init_message(message, bot_start_msg)
+            await utils.send_init_message(message, bot_start_msg)
             return
 
         elif str(message.author) in presets.POWERFUL and message.content[0] == '!':
@@ -122,7 +122,7 @@ def init_discord_bot():
                 
         elif str(message.channel) in presets.ADVENTURE_CHANNELS:
             print("In a text adventure channel")
-            OUTPUT_MESSAGE = await processor.adventure(message)
+            OUTPUT_MESSAGE = await utils.adventure(message)
 
         # Info
         elif message.content == ".help" or message.content == ".about" or message.content == ".info":

@@ -10,7 +10,7 @@ import json
 import numpy as np
 
 import presets
-import processor
+import utils
 
 async def react_image(url_in):
     '''Respond to a given image'''  

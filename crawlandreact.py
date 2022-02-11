@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 import presets
 import interfacer
-import processor
+import utils
 
 async def fetch(url, extension):
     temp_id = 0
@@ -114,7 +114,7 @@ def init_discord_bot():
                             if attachment.filename[-4:].lower() in IMAGE_EXTS:
                                 print("Reacting to image:", str(attachment.url))
 
-                                await processor.react_image(cur_message, attachment.url)
+                                await utils.react_image(cur_message, attachment.url)
                 except discord.errors.HTTPException:
                     print("Error emote not found...")
                     pass
