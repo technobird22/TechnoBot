@@ -9,7 +9,7 @@ import random
 from dotenv import load_dotenv
 
 import presets
-import interfacer
+import interfaces
 import utils
 import custom_commands
 
@@ -174,7 +174,7 @@ def start_all():
 
     # Check APIs
     print("[INFO] Initial API Check...", flush=True)
-    interfacer.check_apis()
+    interfaces.check_apis()
     print("[OK] Completed check!", flush=True)
 
     # Run Discord bot

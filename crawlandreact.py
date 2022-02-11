@@ -12,7 +12,7 @@ import discord
 from dotenv import load_dotenv
 
 import presets
-import interfacer
+import interfaces
 import utils
 
 async def fetch(url, extension):
@@ -139,7 +139,7 @@ def start_all():
 
     # Start Model
     print("[INFO] Starting model...", flush=True)
-    interfacer.initialise()
+    interfaces.initialise()
     print("[OK] Started model", flush=True)
 
     # Run Discord bot

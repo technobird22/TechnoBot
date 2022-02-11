@@ -10,7 +10,7 @@ import random
 import json
 import re
 
-import interfacer
+import interfaces
 import presets
 
 history = []
@@ -368,7 +368,7 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
         START_TIME = time.time()
         loading_emote = random.choice(presets.LOADING_EMOTES)
         await message.add_reaction(loading_emote)
-        raw_output_message = await interfacer.complete(in_text, length=length, temp=temp, top_p=top_p)
+        raw_output_message = await interfaces.complete(in_text, length=length, temp=temp, top_p=top_p)
         # raw_output_message = raw_output_message.replace('\n', '\n> ')
         await message.clear_reaction(loading_emote)
 
@@ -420,7 +420,7 @@ async def react_image(message, attachment):
 
     # print("Connecting to API...")
     
-    result = await interfacer.react_image(attachment)
+    result = await interfaces.react_image(attachment)
     if result == "API_ERROR":
         await message.reply('Image reaction API error. What content are you sending? Videos are currently not supported Please try again later.')
         # await message.add_reaction('')
