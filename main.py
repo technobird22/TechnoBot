@@ -172,10 +172,10 @@ def start_all():
     client = discord.Client()
     print("[OK] Initialized Discord dependancies!", flush=True)
 
-    # Connect to APIs
-    print("[INFO] Initializing APIs...", flush=True)
-    interfacer.initialise()
-    print("[OK] Initialised", flush=True)
+    # Check APIs
+    print("[INFO] Initial API Check...", flush=True)
+    interfacer.check_apis()
+    print("[OK] Completed check!", flush=True)
 
     # Run Discord bot
     print("[INFO] Initializing Discord bot...", flush=True)

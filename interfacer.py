@@ -47,8 +47,11 @@ def exit_things():
     '''Save queue, logs, etc.'''
     return
 
-def initialise():
-    print("Initialising interfaces...")
+def check_apis():
+    print("  Checking APIs...")
+    # Todo
+
+    print("  Skipped... Not implemented")
 
 if __name__ == '__main__':
     print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")
