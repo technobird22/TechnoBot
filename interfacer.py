@@ -2,15 +2,11 @@
 
 #!python
 
-import os
-import sys
 import time
 import aiohttp
 import json
-import numpy as np
 
 import presets
-import utils
 
 async def react_image(url_in):
     '''Respond to a given image'''  
