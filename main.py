@@ -84,14 +84,14 @@ def init_discord_bot():
             return
 
 
-        OUTPUT_MESSAGE = f'You shouldn\'t be seeing this... Please contact "{presets.OWNER_TAG}" on Discord to report this.\nThanks :)'
+        out_message = f'You shouldn\'t be seeing this... Please contact "{presets.OWNER_TAG}" on Discord to report this.\nThanks :)'
 
         # User commands
         if message.content[:9] == ".complete" or message.content[:9] == ".continue":
             in_text = message.content[10:]
 
             async with message.channel.typing():
-                OUTPUT_MESSAGE = await utils.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
+                out_message = await utils.complete(in_text, message, length=128, temp=0.8, top_p=0.9)
 
         # Commands that require power ('!')
         elif str(message.author.id) == presets.OWNER_ID and clean_start:
@@ -116,45 +116,45 @@ def init_discord_bot():
                 raise KeyboardInterrupt
 
             else:
-                # OUTPUT_MESSAGE = "Error! Invalid command!\nPlease check your spelling and try again!"
+                # out_message = "Error! Invalid command!\nPlease check your spelling and try again!"
                 return
 
                 
         elif str(message.channel) in presets.ADVENTURE_CHANNELS:
             print("In a text adventure channel")
-            OUTPUT_MESSAGE = await utils.adventure(message)
+            out_message = await utils.adventure(message)
 
         # Info
         elif message.content == ".help" or message.content == ".about" or message.content == ".info":
             print("\nPrinting about... ")
-            OUTPUT_MESSAGE = presets.about_message
+            out_message = presets.about_message
             await asyncio.sleep(1)
 
         # Reply to a message
         else:
             if await custom_commands.receive_message(message) is None:
-                OUTPUT_MESSAGE = "NO_OUTPUT"
+                out_message = "NO_OUTPUT"
             else:
                 try:
-                    OUTPUT_MESSAGE = presets.PRESET_RESPONSES[str(message.content)]
+                    out_message = presets.PRESET_RESPONSES[str(message.content)]
                 except KeyError:
-                    OUTPUT_MESSAGE = "NO_OUTPUT"
+                    out_message = "NO_OUTPUT"
 
-        if OUTPUT_MESSAGE == "NO_OUTPUT":
+        if out_message == "NO_OUTPUT":
             return
 
         elapsed_time = str(round(time.time() - START_TIME, 2))
-        print(f"BOT Response: '{OUTPUT_MESSAGE}'. Responded in {elapsed_time} seconds.")
+        print(f"BOT Response: '{out_message}'. Responded in {elapsed_time} seconds.")
 
         # Wait for typing indicator
         # await asyncio.sleep(0.01)
 
         LEN_CAP = 1950
-        while len(OUTPUT_MESSAGE) >= LEN_CAP:
-            await message.reply(OUTPUT_MESSAGE[:LEN_CAP], allowed_mentions=presets.ALLOWED_MENTIONS)
-            OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+        while len(out_message) >= LEN_CAP:
+            await message.reply(out_message[:LEN_CAP], allowed_mentions=presets.ALLOWED_MENTIONS)
+            out_message = out_message[LEN_CAP:]
 
-        await message.reply(OUTPUT_MESSAGE, allowed_mentions=presets.ALLOWED_MENTIONS)
+        await message.reply(out_message, allowed_mentions=presets.ALLOWED_MENTIONS)
         print('='*50)
 
 

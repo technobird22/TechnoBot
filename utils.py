@@ -299,63 +299,63 @@ async def adventure_action(action, message):
     return parsed_output
 
 
-async def long_output(message, OUTPUT_MESSAGE, parts_cnt):
+async def long_output(message, out_message, parts_cnt):
     LEN_CAP = max(1, 1900)
     print("LC:", LEN_CAP)
     part_num = 1
 
-    embedVar = discord.Embed(title="Generation Result", description=OUTPUT_MESSAGE[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+    embedVar = discord.Embed(title="Generation Result", description=out_message[:LEN_CAP]+'...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
     embedVar.set_footer(text=f'Part {part_num} of {parts_cnt}. Requested by {message.author}.')
-    print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+    print("SENDING:", out_message[:LEN_CAP])
     await message.reply(embed=embedVar,
             allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
 
-    if len(OUTPUT_MESSAGE) >= LEN_CAP:
-        OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+    if len(out_message) >= LEN_CAP:
+        out_message = out_message[LEN_CAP:]
     else:
-        OUTPUT_MESSAGE = ''
+        out_message = ''
 
     LEN_CAP = 1900
-    while len(OUTPUT_MESSAGE) > 0:
+    while len(out_message) > 0:
         part_num += 1
 
-        embedVar = discord.Embed(title="Generation Result (continued)", description=f'...{OUTPUT_MESSAGE[:LEN_CAP]}...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
+        embedVar = discord.Embed(title="Generation Result (continued)", description=f'...{out_message[:LEN_CAP]}...', color=0x00ff00, timestamp=datetime.datetime.utcnow())
         embedVar.set_footer(text=f'Part {part_num} of {parts_cnt}. Requested by {message.author}.')
-        print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+        print("SENDING:", out_message[:LEN_CAP])
         await message.reply(embed=embedVar,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
 
-        if len(OUTPUT_MESSAGE) >= LEN_CAP:
-            OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+        if len(out_message) >= LEN_CAP:
+            out_message = out_message[LEN_CAP:]
         else:
             break
 
-async def raw_long_output(message, OUTPUT_MESSAGE):
+async def raw_long_output(message, out_message):
     LEN_CAP = max(1, 1900)
     print("LC:", LEN_CAP)
     part_num = 1
 
-    embedVar = discord.Embed(title="Output", description=f'```md\n{OUTPUT_MESSAGE[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
-    print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+    embedVar = discord.Embed(title="Output", description=f'```md\n{out_message[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
+    print("SENDING:", out_message[:LEN_CAP])
     await message.reply(embed=embedVar,
             allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
 
-    if len(OUTPUT_MESSAGE) >= LEN_CAP:
-        OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+    if len(out_message) >= LEN_CAP:
+        out_message = out_message[LEN_CAP:]
     else:
-        OUTPUT_MESSAGE = ''
+        out_message = ''
 
     LEN_CAP = 1900
-    while len(OUTPUT_MESSAGE) > 0:
+    while len(out_message) > 0:
         part_num += 1
 
-        embedVar = discord.Embed(title="Output (continued)", description=f'```{OUTPUT_MESSAGE[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
-        print("SENDING:", OUTPUT_MESSAGE[:LEN_CAP])
+        embedVar = discord.Embed(title="Output (continued)", description=f'```{out_message[:LEN_CAP]}```', color=0xff0000, timestamp=datetime.datetime.utcnow())
+        print("SENDING:", out_message[:LEN_CAP])
         await message.reply(embed=embedVar,
                 allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False))
 
-        if len(OUTPUT_MESSAGE) >= LEN_CAP:
-            OUTPUT_MESSAGE = OUTPUT_MESSAGE[LEN_CAP:]
+        if len(out_message) >= LEN_CAP:
+            out_message = out_message[LEN_CAP:]
         else:
             break
 
