@@ -20,6 +20,16 @@ bot_temp = 0.7
 SHORT_SPACER = '-'*30
 SPACER = '-'*60
 
+async def update_status(client, status):
+    if status.startswith('Listening to '):
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status[13:]))
+    elif status.startswith('Playing '):
+        await client.change_presence(activity=discord.Game(name=status[8:]))
+    elif status.startswith('Watching '):
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status[9:]))
+    else:
+        await client.change_presence(activity=discord.Activity(name=status))
+
 async def list_saves(message):
     data = json.load(open('adventure_presets.json'))
 

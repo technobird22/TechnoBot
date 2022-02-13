@@ -1,6 +1,7 @@
 '''Main file'''
 
 import discord
+from discord.ext import tasks
 import asyncio
 
 import os
@@ -29,6 +30,8 @@ def init_discord_bot():
 
         await asyncio.sleep(1)
 
+        if not status_loop.is_running():
+            status_loop.start()
         bot_start_msg = f'Initialised in **{elapsed_time}** seconds. Current Time: `{time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())} UTC`\nConnected to: ```diff\n{joined_servers}```'
 
         print("[OK] Initialised!")
@@ -107,6 +110,11 @@ def init_discord_bot():
         elif str(message.author) in presets.POWERFUL and message.content[0] == '!':
             command = message.content[1:]
 
+            if command.startswith("status"):
+                print("Updating status...")
+                await message.channel.send(f'Updating status...\n`{command[7:]}`')
+                await utils.update_status(client, command[7:])
+
             if(command == "stop"):
                 print("Stopping bot")
                 await message.reply("Okay, I'm shutting down now")
@@ -156,6 +164,13 @@ def init_discord_bot():
 
         await message.reply(out_message, allowed_mentions=presets.ALLOWED_MENTIONS)
         print('='*50)
+
+
+    @tasks.loop(seconds=1800)
+    async def status_loop():
+        status = random.choice(presets.STATUS_MESSAGES)
+        print("Updating status to:", status)
+        await utils.update_status(client, status)
 
 
 def start_all():
