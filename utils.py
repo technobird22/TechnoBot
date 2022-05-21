@@ -2,6 +2,8 @@
 import discord
 import asyncio
 import aiohttp
+import requests
+import io
 
 import math
 import time
@@ -96,6 +98,20 @@ async def is_url_img(url):
             print(f'Header is "{response.headers["content-type"]}"')
             # return response.headers["content-type"].startswith('image/') or response.headers["content-type"].startswith('video/')
             return response.headers["content-type"].startswith('image/')
+
+def fetch(url):
+    if str(url).startswith('http://') or str(url).startswith('https://'):
+        r = requests.get(url)
+        # r = requests.get(url, stream=True).raw
+        r.raise_for_status()
+        fd = io.BytesIO()
+        fd.write(r.content)
+        fd.seek(0)
+        return fd
+    else:
+        print("WARNING: NOT AN URL")
+        raise
+
 
 async def get_tenor_gif(url):
     # if 'c.tenor.com/' in url:
@@ -387,8 +403,8 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
         if raw_output_message == "BUSY":
             print("API Rate limit")
-            busy_emote = random.choice(presets.SAD_EMOTES)
-            await message.add_reaction(sad_emote)
+            busy_emote = random.choice(presets.BUSY_EMOTES)
+            await message.add_reaction(busy_emote)
             reply = await message.reply('._.   Sorry, the API is currently busy. Please try again in a minute.')
             await asyncio.sleep(20)
             await message.clear_reaction(busy_emote)
@@ -401,8 +417,8 @@ async def complete(in_text, message, length, temp, top_p, output_type="embed"):
 
         if raw_output_message == "WARNING: GENERAL ERROR":
             print("API Error (general)")
-            busy_emote = random.choice(presets.SAD_EMOTES)
-            await message.add_reaction(sad_emote)
+            busy_emote = random.choice(presets.BUSY_EMOTES)
+            await message.add_reaction(busy_emote)
             reply = await message.reply('._.  Something went wrong with the completion API. Please retry shortly.')
             await asyncio.sleep(20)
             await message.clear_reaction(busy_emote)
@@ -432,7 +448,8 @@ async def react_image(message, attachment):
     
     result = await interfaces.react_image(attachment)
     if result == "API_ERROR":
-        await message.reply('Image reaction API error. What content are you sending? Videos are currently not supported Please try again later.')
+        # await message.reply('Image reaction API error. What content are you sending? Videos are currently not supported Please try again later.')
+        await message.reply('Image reaction API error. Please try again later.')
         # await message.add_reaction('')
         return
 
@@ -504,4 +521,6 @@ async def send_init_message(message, bot_start_msg):
         await msg_alert.delete()
 
 if __name__ == '__main__':
+    # import main
+    # main.start_all()
     print("This is a module and is not supposed to be run directly.\nPlease try running main.py instead")

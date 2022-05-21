@@ -45,12 +45,14 @@ def init_discord_bot():
         if message.author == client.user:
             return
 
-        if len(str(message.content)) > 50:
+        if len(message.content) > 50:
             print('-'*75)
+
         print('{0: <22}'.format(f'{message.guild} '), end='')
         print('{0: <22}'.format(f'> #{message.channel} '), end='')
         print('{0: <22}'.format(f'> {message.author} '), end='')
-        if len(str(message.content)) > 50:
+
+        if len(message.content) > 50:
             print(f":  ⤵\n  > '{message.content}'.\n{'-'*75}")
         else:
             print(f"> '{message.content}'.")
@@ -60,7 +62,14 @@ def init_discord_bot():
             print("^^^ Ignoring Direct message. ^^^")
             return
 
+        if message.channel.is_nsfw() and presets.IGNORE_NSFW:
+            print("--> Ignoring NSFW Channel.")
+            return
+
         urls = [attachment.url for attachment in message.attachments] + utils.get_urls(message.content)
+        for embed in message.embeds:
+            if embed.image.url is not discord.Embed.Empty:
+                urls.append(embed.image.url)
         if urls != []:
             print('URLs and Attachments:')
             for n, url in enumerate(urls):
@@ -72,11 +81,18 @@ def init_discord_bot():
                 if '://tenor.com/' in url:
                     print(f'Link {n} is a tenor gif')
                     url = await utils.get_tenor_gif(url)
-                    await utils.react_image(message, url)
-
                 elif await utils.is_url_img(url):
                     print(f'Link {n} is an image!')
-                    await utils.react_image(message, url)
+                else:
+                    print(f'Link {n} is not an image!')
+                    continue
+
+                # await utils.react_image(message, url)
+                # await custom_commands.receive_image(message, url)
+
+                # Do in another new thread
+                asyncio.get_event_loop().create_task(utils.react_image(message, url))
+                asyncio.get_event_loop().create_task(custom_commands.receive_image(message, url))
             print('='*50)
 
         if len(message.content) == 0: # Attachment only / channel status message
@@ -107,7 +123,7 @@ def init_discord_bot():
             await utils.send_init_message(message, bot_start_msg)
             return
 
-        elif str(message.author) in presets.POWERFUL and message.content[0] == '!':
+        elif str(message.author.id) in presets.POWERFUL and message.content[0] == '!':
             command = message.content[1:]
 
             if command.startswith("status"):
@@ -144,7 +160,7 @@ def init_discord_bot():
                 out_message = "NO_OUTPUT"
             else:
                 try:
-                    out_message = presets.PRESET_RESPONSES[str(message.content)]
+                    out_message = presets.PRESET_RESPONSES[message.content]
                 except KeyError:
                     out_message = "NO_OUTPUT"
 
